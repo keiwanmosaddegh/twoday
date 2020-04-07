@@ -6,6 +6,16 @@ class ModalBottomSheet extends StatefulWidget {
 }
 
 class _ModalBottomSheetState extends State<ModalBottomSheet> {
+
+  final newHabitController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    newHabitController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -15,7 +25,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            HabitTextField(),
+            HabitTextField(newHabitController: newHabitController),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -26,7 +36,9 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
                       color: Colors.blue
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    print(newHabitController.text);
+                  },
                 ),
               ],
             )
@@ -38,9 +50,14 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
 }
 
 class HabitTextField extends StatelessWidget {
+
+  final TextEditingController newHabitController;
+  HabitTextField({this.newHabitController});
+
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: newHabitController,
       decoration: InputDecoration(
           hintText: "New habit",
           border: InputBorder.none,
@@ -49,36 +66,5 @@ class HabitTextField extends StatelessWidget {
               fontSize: 18,
               color: Colors.grey[500])),
     );
-  }
-}
-
-class SaveHabitButton extends StatefulWidget {
-  @override
-  _SaveHabitButtonState createState() => _SaveHabitButtonState();
-}
-
-class _SaveHabitButtonState extends State<SaveHabitButton> {
-  bool checkingFlight = false;
-  bool success = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return !checkingFlight
-        ? MaterialButton(
-            onPressed: () async {
-              setState(() {
-                checkingFlight = true;
-              });
-
-              Navigator.pop(context);
-            },
-            child: Text("Save", style: TextStyle(color: Colors.black)),
-          )
-        : !success
-            ? CircularProgressIndicator()
-            : Icon(
-                Icons.check,
-                color: Colors.green,
-              );
   }
 }
