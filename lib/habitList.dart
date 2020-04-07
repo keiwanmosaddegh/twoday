@@ -18,6 +18,7 @@ class _HabitListState extends State<HabitList> {
           child: Icon(Icons.add),
           onPressed: () {
             showModalBottomSheet(
+              isScrollControlled: true,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12),

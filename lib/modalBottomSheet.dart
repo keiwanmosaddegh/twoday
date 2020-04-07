@@ -8,28 +8,30 @@ class ModalBottomSheet extends StatefulWidget {
 class _ModalBottomSheetState extends State<ModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 110,
-      margin: EdgeInsets.fromLTRB(26, 16, 12, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          HabitTextField(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              FlatButton(
-                child: Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.blue
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.fromLTRB(26, 16, 12, 8),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            HabitTextField(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FlatButton(
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                      color: Colors.blue
+                    ),
                   ),
+                  onPressed: () {},
                 ),
-                onPressed: () {},
-              ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
