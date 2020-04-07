@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ModalBottomSheet extends StatefulWidget {
+  final Function addHabit;
+  ModalBottomSheet({this.addHabit});
+
   @override
   _ModalBottomSheetState createState() => _ModalBottomSheetState();
 }
@@ -37,7 +40,8 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
                     ),
                   ),
                   onPressed: () {
-                    print(newHabitController.text);
+                    widget.addHabit(newHabitController.text);
+                    Navigator.pop(context);
                   },
                 ),
               ],

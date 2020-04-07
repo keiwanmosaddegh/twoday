@@ -18,14 +18,15 @@ class _HabitListState extends State<HabitList> {
           child: Icon(Icons.add),
           onPressed: () {
             showModalBottomSheet(
-              isScrollControlled: true,
+                isScrollControlled: true,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12)
-                    )),
+                        topRight: Radius.circular(12))),
                 context: context,
-                builder: (context) => ModalBottomSheet());
+                builder: (context) => ModalBottomSheet(
+                      addHabit: addHabit,
+                    ));
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
@@ -33,10 +34,12 @@ class _HabitListState extends State<HabitList> {
           child: Text("The Two Day Rule"),
         ),
       ),
-      body: Column(
-          children: habitList
-              .map((habit) => HabitCardTemplate(habit: habit))
-              .toList()),
+      body: SingleChildScrollView(
+        child: Column(
+            children: habitList
+                .map((habit) => HabitCardTemplate(habit: habit))
+                .toList()),
+      ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         child: Row(
@@ -54,5 +57,11 @@ class _HabitListState extends State<HabitList> {
         ),
       ),
     );
+  }
+
+  void addHabit(habitName) {
+    setState(() {
+      habitList.add(Habit(habitName));
+    });
   }
 }
