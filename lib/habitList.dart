@@ -9,7 +9,7 @@ class HabitList extends StatefulWidget {
 }
 
 class _HabitListState extends State<HabitList> {
-  List<Habit> habitList = [Habit("Brush teeth"), Habit("Work out")];
+  List<Habit> habitList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +40,30 @@ class _HabitListState extends State<HabitList> {
               child: Text(
                 "Habits",
                 style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white
-                ),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
               )),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(bottom: 30),
-          child: Column(
-              children: habitList
-                  .map((habit) => HabitCardTemplate(habit: habit))
-                  .toList()),
+          child: habitList.isNotEmpty
+              ? Column(
+                  children: habitList
+                      .map((habit) => HabitCardTemplate(habit: habit))
+                      .toList())
+              : Padding(
+                  padding: EdgeInsets.only(left: 20, top: 10),
+                  child: Text(
+                    "Habit list is empty",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white30,
+                        fontStyle: FontStyle.italic),
+                  ),
+                ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
