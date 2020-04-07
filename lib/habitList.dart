@@ -35,10 +35,13 @@ class _HabitListState extends State<HabitList> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-            children: habitList
-                .map((habit) => HabitCardTemplate(habit: habit))
-                .toList()),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 30),
+          child: Column(
+              children: habitList
+                  .map((habit) => HabitCardTemplate(habit: habit))
+                  .toList()),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
