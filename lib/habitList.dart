@@ -14,6 +14,7 @@ class _HabitListState extends State<HabitList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[800],
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
@@ -29,9 +30,21 @@ class _HabitListState extends State<HabitList> {
                     ));
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: AppBar(
-        title: Center(
-          child: Text("The Two Day Rule"),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: AppBar(
+          backgroundColor: Colors.blueGrey[800],
+          elevation: 0,
+          flexibleSpace: Padding(
+              padding: EdgeInsets.only(top: 60, left: 20),
+              child: Text(
+                "Habits",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white
+                ),
+              )),
         ),
       ),
       body: SingleChildScrollView(
