@@ -12,7 +12,7 @@ class HabitCardTemplate extends StatefulWidget {
 }
 
 class _HabitCardTemplateState extends State<HabitCardTemplate> {
-  bool ticked = false;
+  bool checkboxTicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +32,11 @@ class _HabitCardTemplateState extends State<HabitCardTemplate> {
                     fontSize: 20,
                   ),
                 ),
-                IconButton(
-                  icon: ticked ? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank),
-                  onPressed: () {
+                Checkbox(
+                  value: checkboxTicked,
+                  onChanged: (bool value) {
                     setState(() {
-                      ticked = !ticked;
+                      checkboxTicked = value;
                     });
                   },
                 ),
