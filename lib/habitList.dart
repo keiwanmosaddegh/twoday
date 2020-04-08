@@ -88,6 +88,23 @@ class _HabitListState extends State<HabitList> {
   void addHabit(habitName) {
     setState(() {
       habitList.add(Habit(habitName));
+      timeUpdateHabit();
     });
+  }
+
+
+
+  int minutesLeftOfDay() {
+    var minutesPerDay = 1440;
+    var pastMinutesToday = TimeOfDay.now().hour*60 + TimeOfDay.now().minute;
+    return minutesPerDay - pastMinutesToday;
+  }
+
+  void timeUpdateHabit() async {
+
+    while(habitList.isNotEmpty) {
+      await Future.delayed(Duration(minutes: minutesLeftOfDay()));
+
+    }
   }
 }
