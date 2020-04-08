@@ -92,19 +92,21 @@ class _HabitListState extends State<HabitList> {
     });
   }
 
+  void timeUpdateHabit() async {
+    while(habitList.isNotEmpty) {
+      await Future.delayed(Duration(minutes: minutesLeftOfDay()));
+      //skapa metod som går igenom alla habits i listan, ser hur länge sedan deras
+      //senaste tick var*, och reagera olika beroende på just det.
 
+      //*Innan vi kan fortsätta här måste vi ha sparat undan varje gång en habit tickas.
+      //Detta vill vi nog göra i Habits-klassen, genom att skapa en stack, där senaste ticken sparas
+      //överst, och att stacken har ett utrymme på 3 platser.
+    }
+  }
 
   int minutesLeftOfDay() {
     var minutesPerDay = 1440;
     var pastMinutesToday = TimeOfDay.now().hour*60 + TimeOfDay.now().minute;
     return minutesPerDay - pastMinutesToday;
-  }
-
-  void timeUpdateHabit() async {
-
-    while(habitList.isNotEmpty) {
-      await Future.delayed(Duration(minutes: minutesLeftOfDay()));
-
-    }
   }
 }
