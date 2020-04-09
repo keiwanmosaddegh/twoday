@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:twodayrule/habit.dart';
 
@@ -15,49 +14,41 @@ class HabitCard extends StatefulWidget {
 
 class _HabitCardState extends State<HabitCard> {
   bool checkboxTicked = false;
-  int daysSinceLastCheckboxTick = 0;
-  ListQueue<DateTime> checkboxHistory = ListQueue();
+  int daysSinceLastCheckboxTick = 4;
+  int previousDaysSinceLastCheckboxTick = 0;
 
   @override
   void initState() {
     super.initState();
     widget.habitStreamController.stream.listen((_) {
-      uncheckTickbox();
-
+      uncheckCheckbox();
     });
   }
 
-  void uncheckTickbox() {
+  void uncheckCheckbox() {
     setState(() {
       checkboxTicked = false;
+      daysSinceLastCheckboxTick++;
     });
   }
 
-  int daysFromToday(DateTime date) {
-    return DateTime.now().difference(date).inDays;
-  }
-
-  void reactToCheckboxHistory() {
-    var daysSinceLastCheckboxTick = daysFromToday(checkboxHistory.first);
-
-
-  }
-
-
-  void addCheckboxTickDate(DateTime date) {
-    if(checkboxHistory.length > 3) {
-      checkboxHistory.removeLast();
+  Color cardStyleDaysSinceLastCheck() {
+    switch(daysSinceLastCheckboxTick) {
+      case 0:
+        return Colors.green;
+      case 1:
+        return Colors.orange;
+      case 2:
+        return Colors.red;
+      default:
+        return null;
     }
-    checkboxHistory.addFirst(date);
-  }
-
-  void removeCheckboxTickDate() {
-    checkboxHistory.removeFirst();
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: cardStyleDaysSinceLastCheck(),
       margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Padding(
         padding: EdgeInsets.all(20),
@@ -76,17 +67,14 @@ class _HabitCardState extends State<HabitCard> {
                 Checkbox(
                   value: checkboxTicked,
                   onChanged: (bool value) {
-                    print("This just triggered lol.");
                     setState(() {
                       checkboxTicked = value;
                       if(checkboxTicked) {
-                        addCheckboxTickDate(DateTime.now());
+                        previousDaysSinceLastCheckboxTick = daysSinceLastCheckboxTick;
+                        daysSinceLastCheckboxTick = 0;
                       } else {
-                        removeCheckboxTickDate();
+                        daysSinceLastCheckboxTick = previousDaysSinceLastCheckboxTick;
                       }
-
-                      //skapa en metod i habitList som skickas in i denna klass
-                      //den är till för att
                     });
                   },
                 ),
