@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:twodayrule/habitCardTemplate.dart';
+import 'package:twodayrule/habitCard.dart';
 import 'package:twodayrule/habit.dart';
 import 'package:twodayrule/modalBottomSheet.dart';
 
 class HabitList extends StatefulWidget {
+
   @override
   _HabitListState createState() => _HabitListState();
 }
 
 class _HabitListState extends State<HabitList> {
-  List<Habit> habitList = [];
+  List<HabitCard> habitCardList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +50,8 @@ class _HabitListState extends State<HabitList> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(bottom: 30),
-          child: habitList.isNotEmpty
-              ? Column(
-                  children: habitList
-                      .map((habit) => HabitCardTemplate(habit: habit))
-                      .toList())
+          child: habitCardList.isNotEmpty
+              ? Column(children: habitCardList)
               : Padding(
                   padding: EdgeInsets.only(left: 20, top: 10),
                   child: Text(
@@ -87,14 +85,23 @@ class _HabitListState extends State<HabitList> {
 
   void addHabit(habitName) {
     setState(() {
-      habitList.add(Habit(habitName));
+      habitCardList.add(HabitCard(habit: Habit(habitName)));
       timeUpdateHabit();
+    });
+  }
+  
+  void uncheckAllCheckboxes() {
+    habitCardList.forEach((habitCard) {
+      //make so that I can run the uncheckCheckbox function of the habitCards.
     });
   }
 
   void timeUpdateHabit() async {
-    while(habitList.isNotEmpty) {
+    while (habitCardList.isNotEmpty) {
       await Future.delayed(Duration(minutes: minutesLeftOfDay()));
+      //Skapa en metod som avmarkerar alla habit checkboxes.
+
+
       //skapa metod som går igenom alla habits i listan, ser hur länge sedan deras
       //senaste tick var*, och reagera olika beroende på just det.
 
@@ -106,7 +113,7 @@ class _HabitListState extends State<HabitList> {
 
   int minutesLeftOfDay() {
     var minutesPerDay = 1440;
-    var pastMinutesToday = TimeOfDay.now().hour*60 + TimeOfDay.now().minute;
+    var pastMinutesToday = TimeOfDay.now().hour * 60 + TimeOfDay.now().minute;
     return minutesPerDay - pastMinutesToday;
   }
 }

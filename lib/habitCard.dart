@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:twodayrule/habit.dart';
 
-class HabitCardTemplate extends StatefulWidget {
+class HabitCard extends StatefulWidget {
 
   final Habit habit;
-  final Function addCheckboxTickDate;
-  final Function removeCheckboxTickDate;
 
-  HabitCardTemplate({this.habit, this.addCheckboxTickDate, this.removeCheckboxTickDate});
+  HabitCard({this.habit});
 
   @override
-  _HabitCardTemplateState createState() => _HabitCardTemplateState();
+  _HabitCardState createState() => _HabitCardState();
 }
 
-class _HabitCardTemplateState extends State<HabitCardTemplate> {
+class _HabitCardState extends State<HabitCard> {
   bool checkboxTicked = false;
+
+  void uncheckTickbox() {
+    checkboxTicked = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +41,10 @@ class _HabitCardTemplateState extends State<HabitCardTemplate> {
                   onChanged: (bool value) {
                     setState(() {
                       checkboxTicked = value;
-                      //populera Habit med ett datum i sin stack
-                      //gör detta genom att skicka in en metod till denna klass från habit
                       if(checkboxTicked) {
-                        widget.addCheckboxTickDate();
+                        widget.habit.addCheckboxTickDate(DateTime.now());
                       } else {
-                        widget.removeCheckboxTickDate();
+                        widget.habit.removeCheckboxTickDate();
                       }
 
                       //skapa en metod i habitList som skickas in i denna klass
