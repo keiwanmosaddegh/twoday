@@ -15,6 +15,7 @@ class HabitCard extends StatefulWidget {
 
 class _HabitCardState extends State<HabitCard> {
   bool checkboxTicked = false;
+  int daysSinceLastCheckboxTick = 0;
   ListQueue<DateTime> checkboxHistory = ListQueue();
 
   @override
@@ -36,6 +37,11 @@ class _HabitCardState extends State<HabitCard> {
     return DateTime.now().difference(date).inDays;
   }
 
+  void reactToCheckboxHistory() {
+    var daysSinceLastCheckboxTick = daysFromToday(checkboxHistory.first);
+
+
+  }
 
 
   void addCheckboxTickDate(DateTime date) {
