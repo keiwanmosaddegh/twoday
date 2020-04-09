@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:twodayrule/habitCard.dart';
 import 'package:twodayrule/habit.dart';
@@ -11,6 +12,7 @@ class HabitList extends StatefulWidget {
 
 class _HabitListState extends State<HabitList> {
   List<HabitCard> habitCardList = [];
+  StreamController<void> habitStreamController = StreamController<void>.broadcast();
 
   @override
   Widget build(BuildContext context) {
@@ -85,22 +87,21 @@ class _HabitListState extends State<HabitList> {
 
   void addHabit(habitName) {
     setState(() {
-      habitCardList.add(HabitCard(habit: Habit(habitName)));
+      habitCardList.add(HabitCard(habit: Habit(habitName), habitStreamController: habitStreamController));
       timeUpdateHabit();
     });
   }
   
   void uncheckAllCheckboxes() {
-    habitCardList.forEach((habitCard) {
-      //make so that I can run the uncheckCheckbox function of the habitCards.
-    });
+    habitStreamController.add(null);
   }
 
   void timeUpdateHabit() async {
     while (habitCardList.isNotEmpty) {
+      //Wait until midnight
       await Future.delayed(Duration(minutes: minutesLeftOfDay()));
-      //Skapa en metod som avmarkerar alla habit checkboxes.
-
+      //Reset our checkboxes for the day
+      uncheckAllCheckboxes();
 
       //skapa metod som går igenom alla habits i listan, ser hur länge sedan deras
       //senaste tick var*, och reagera olika beroende på just det.

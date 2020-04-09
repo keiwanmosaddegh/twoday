@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:twodayrule/habit.dart';
 
 class HabitCard extends StatefulWidget {
 
   final Habit habit;
-
-  HabitCard({this.habit});
+  final StreamController<void> habitStreamController;
+  HabitCard({this.habit, this.habitStreamController});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -14,8 +15,18 @@ class HabitCard extends StatefulWidget {
 class _HabitCardState extends State<HabitCard> {
   bool checkboxTicked = false;
 
+  @override
+  void initState() {
+    super.initState();
+    widget.habitStreamController.stream.listen((_) {
+      uncheckTickbox();
+    });
+  }
+
   void uncheckTickbox() {
-    checkboxTicked = false;
+    setState(() {
+      checkboxTicked = false;
+    });
   }
 
   @override
