@@ -17,7 +17,7 @@ class _HabitListState extends State<HabitList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
@@ -36,7 +36,7 @@ class _HabitListState extends State<HabitList> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80),
         child: AppBar(
-          backgroundColor: Colors.blueGrey[800],
+          backgroundColor: Colors.transparent,
           elevation: 0,
           flexibleSpace: Padding(
               padding: EdgeInsets.only(top: 60, left: 20),
@@ -45,7 +45,7 @@ class _HabitListState extends State<HabitList> {
                 style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white),
+                    color: Colors.grey[850]),
               )),
         ),
       ),

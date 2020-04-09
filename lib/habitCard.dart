@@ -35,13 +35,13 @@ class _HabitCardState extends State<HabitCard> {
   Color cardStyleDaysSinceLastCheck() {
     switch(daysSinceLastCheckboxTick) {
       case 0:
-        return Colors.green;
+        return Colors.green[200];
       case 1:
-        return Colors.orange;
+        return Colors.orange[200];
       case 2:
-        return Colors.red;
+        return Colors.red[200];
       default:
-        return null;
+        return Colors.white;
     }
   }
 
@@ -61,11 +61,14 @@ class _HabitCardState extends State<HabitCard> {
                 Text(
                   widget.habit.habitName,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[850],
                   ),
                 ),
                 Checkbox(
                   value: checkboxTicked,
+                  activeColor: Colors.grey[850],
                   onChanged: (bool value) {
                     setState(() {
                       checkboxTicked = value;
