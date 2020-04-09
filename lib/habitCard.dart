@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:twodayrule/habit.dart';
 
@@ -14,12 +15,14 @@ class HabitCard extends StatefulWidget {
 
 class _HabitCardState extends State<HabitCard> {
   bool checkboxTicked = false;
+  ListQueue<DateTime> checkboxHistory = ListQueue();
 
   @override
   void initState() {
     super.initState();
     widget.habitStreamController.stream.listen((_) {
       uncheckTickbox();
+
     });
   }
 
@@ -27,6 +30,23 @@ class _HabitCardState extends State<HabitCard> {
     setState(() {
       checkboxTicked = false;
     });
+  }
+
+  int daysFromToday(DateTime date) {
+    return DateTime.now().difference(date).inDays;
+  }
+
+
+
+  void addCheckboxTickDate(DateTime date) {
+    if(checkboxHistory.length > 3) {
+      checkboxHistory.removeLast();
+    }
+    checkboxHistory.addFirst(date);
+  }
+
+  void removeCheckboxTickDate() {
+    checkboxHistory.removeFirst();
   }
 
   @override
@@ -50,12 +70,13 @@ class _HabitCardState extends State<HabitCard> {
                 Checkbox(
                   value: checkboxTicked,
                   onChanged: (bool value) {
+                    print("This just triggered lol.");
                     setState(() {
                       checkboxTicked = value;
                       if(checkboxTicked) {
-                        widget.habit.addCheckboxTickDate(DateTime.now());
+                        addCheckboxTickDate(DateTime.now());
                       } else {
-                        widget.habit.removeCheckboxTickDate();
+                        removeCheckboxTickDate();
                       }
 
                       //skapa en metod i habitList som skickas in i denna klass
