@@ -85,10 +85,16 @@ class _HabitListState extends State<HabitList> {
     );
   }
 
-  void addHabit(habitName) {
+  void addHabit(String habitName) {
     setState(() {
-      habitCardList.add(HabitCard(habit: Habit(habitName), habitStreamController: habitStreamController));
+      habitCardList.add(HabitCard(habit: Habit(habitName), habitStreamController: habitStreamController, removeHabit: removeHabit));
       timeUpdateHabit();
+    });
+  }
+
+  void removeHabit(@required HabitCard habit) {
+    setState(() {
+      habitCardList.remove(habit);
     });
   }
   

@@ -6,7 +6,8 @@ class HabitCard extends StatefulWidget {
 
   final Habit habit;
   final StreamController<void> habitStreamController;
-  HabitCard({this.habit, this.habitStreamController});
+  final Function removeHabit;
+  HabitCard({this.habit, this.habitStreamController, this.removeHabit});
 
   @override
   _HabitCardState createState() => _HabitCardState();
@@ -66,21 +67,29 @@ class _HabitCardState extends State<HabitCard> {
                     color: Colors.grey[850],
                   ),
                 ),
-                Checkbox(
-                  value: checkboxTicked,
-                  activeColor: Colors.grey[850],
-                  onChanged: (bool value) {
-                    setState(() {
-                      checkboxTicked = value;
-                      if(checkboxTicked) {
-                        previousDaysSinceLastCheckboxTick = daysSinceLastCheckboxTick;
-                        daysSinceLastCheckboxTick = 0;
-                      } else {
-                        daysSinceLastCheckboxTick = previousDaysSinceLastCheckboxTick;
-                      }
-                    });
-                  },
-                ),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => widget.removeHabit(context.widget),
+                    ),
+                    Checkbox(
+                      value: checkboxTicked,
+                      activeColor: Colors.grey[850],
+                      onChanged: (bool value) {
+                        setState(() {
+                          checkboxTicked = value;
+                          if(checkboxTicked) {
+                            previousDaysSinceLastCheckboxTick = daysSinceLastCheckboxTick;
+                            daysSinceLastCheckboxTick = 0;
+                          } else {
+                            daysSinceLastCheckboxTick = previousDaysSinceLastCheckboxTick;
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                )
               ],
             )
           ],
