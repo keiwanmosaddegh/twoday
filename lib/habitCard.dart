@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:twodayrule/habit.dart';
 
 class HabitCard extends StatefulWidget {
-
   final Habit habit;
   final StreamController<void> habitStreamController;
   final Function removeHabit;
+
   HabitCard({this.habit, this.habitStreamController, this.removeHabit});
 
   @override
@@ -17,12 +17,26 @@ class _HabitCardState extends State<HabitCard> {
   bool checkboxTicked = false;
   int daysSinceLastCheckboxTick = 4;
   int previousDaysSinceLastCheckboxTick = 0;
+  int currentStreak = 0;
+  int longestStreak = 0;
 
   @override
   void initState() {
     super.initState();
     widget.habitStreamController.stream.listen((_) {
       uncheckCheckbox();
+      periodicStreakCheck();
+    });
+  }
+
+  void periodicStreakCheck() {
+    setState(() {
+      if(currentStreak!=0 && daysSinceLastCheckboxTick>2) {
+        if(currentStreak > longestStreak) {
+          longestStreak = currentStreak;
+        }
+        currentStreak = 0;
+      }
     });
   }
 
@@ -33,8 +47,25 @@ class _HabitCardState extends State<HabitCard> {
     });
   }
 
+  void defineDaysSinceLastCheckboxCheck() {
+    if (checkboxTicked) {
+      previousDaysSinceLastCheckboxTick = daysSinceLastCheckboxTick;
+      daysSinceLastCheckboxTick = 0;
+    } else {
+      daysSinceLastCheckboxTick = previousDaysSinceLastCheckboxTick;
+    }
+  }
+
+  void updateStreak() {
+    if (checkboxTicked) {
+      currentStreak++;
+    } else {
+      currentStreak--;
+    }
+  }
+
   Color cardStyleDaysSinceLastCheck() {
-    switch(daysSinceLastCheckboxTick) {
+    switch (daysSinceLastCheckboxTick) {
       case 0:
         return Colors.green[200];
       case 1:
@@ -67,6 +98,13 @@ class _HabitCardState extends State<HabitCard> {
                     color: Colors.grey[850],
                   ),
                 ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Current streak: $currentStreak"),
+                    Text("Longest streak: $longestStreak")
+                  ],
+                ),
                 Row(
                   children: <Widget>[
                     IconButton(
@@ -79,12 +117,8 @@ class _HabitCardState extends State<HabitCard> {
                       onChanged: (bool value) {
                         setState(() {
                           checkboxTicked = value;
-                          if(checkboxTicked) {
-                            previousDaysSinceLastCheckboxTick = daysSinceLastCheckboxTick;
-                            daysSinceLastCheckboxTick = 0;
-                          } else {
-                            daysSinceLastCheckboxTick = previousDaysSinceLastCheckboxTick;
-                          }
+                          defineDaysSinceLastCheckboxCheck();
+                          updateStreak();
                         });
                       },
                     ),

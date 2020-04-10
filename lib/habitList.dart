@@ -106,18 +106,7 @@ class _HabitListState extends State<HabitList> {
     while (habitCardList.isNotEmpty) {
       //Wait until midnight
       await Future.delayed(Duration(minutes: minutesLeftOfDay()));
-      //Reset our checkboxes for the day
       uncheckAllCheckboxes();
-
-      //skapa metod som går igenom alla habits i listan, ser hur länge sedan deras
-      //senaste tick var*, och reagera olika beroende på just det.
-
-
-
-
-      //*Innan vi kan fortsätta här måste vi ha sparat undan varje gång en habit tickas.
-      //Detta vill vi nog göra i Habits-klassen, genom att skapa en stack, där senaste ticken sparas
-      //överst, och att stacken har ett utrymme på 3 platser.
     }
   }
 
