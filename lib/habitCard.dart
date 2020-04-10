@@ -102,6 +102,7 @@ class _HabitCardState extends State<HabitCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text("Current streak: $currentStreak"),
+                    SizedBox(height: 6),
                     Text("Longest streak: $longestStreak")
                   ],
                 ),
