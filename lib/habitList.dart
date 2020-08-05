@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twodayrule/habitCard.dart';
-import 'package:twodayrule/habit.dart';
+import 'package:twodayrule/homepage/model/habit.dart';
+import 'package:twodayrule/homepage/bloc/bloc.dart';
 import 'package:twodayrule/modalBottomSheet.dart';
 
 class HabitList extends StatefulWidget {
-
   @override
   _HabitListState createState() => _HabitListState();
 }
 
 class _HabitListState extends State<HabitList> {
   List<HabitCard> habitCardList = [];
-  StreamController<void> habitStreamController = StreamController<void>.broadcast();
+  StreamController<void> habitStreamController =
+      StreamController<void>.broadcast();
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +24,14 @@ class _HabitListState extends State<HabitList> {
           child: Icon(Icons.add),
           onPressed: () {
             showModalBottomSheet(
-                isScrollControlled: true,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12))),
-                context: context,
-                builder: (context) => ModalBottomSheet(
-                      addHabit: addHabit,
-                    ));
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12))),
+              context: context,
+              builder: (context) => ModalBottomSheet(addHabit: addHabit),
+            );
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: PreferredSize(
@@ -51,19 +52,30 @@ class _HabitListState extends State<HabitList> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(bottom: 30),
-          child: habitCardList.isNotEmpty
-              ? Column(children: habitCardList)
-              : Padding(
-                  padding: EdgeInsets.only(left: 20, top: 10),
-                  child: Text(
-                    "Habit list is empty",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white30,
-                        fontStyle: FontStyle.italic),
-                  ),
-                ),
+            padding: EdgeInsets.only(bottom: 30),
+            child: BlocConsumer<HabitBloc, HabitState>(
+              builder: (BuildContext context, HabitState state) {
+                if(state is HabitsLoadSuccess) {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: state.habits.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: ListTile(
+                          title: Text(state.habits[index].task),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Text("Hello");
+                }
+              },
+              listener: (BuildContext context, HabitState state) {
+
+              },
+            ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -87,7 +99,10 @@ class _HabitListState extends State<HabitList> {
 
   void addHabit(String habitName) {
     setState(() {
-      habitCardList.add(HabitCard(habit: Habit(habitName), habitStreamController: habitStreamController, removeHabit: removeHabit));
+      habitCardList.add(HabitCard(
+          habit: Habit(habitName),
+          habitStreamController: habitStreamController,
+          removeHabit: removeHabit));
       timeUpdateHabit();
     });
   }
@@ -97,7 +112,7 @@ class _HabitListState extends State<HabitList> {
       habitCardList.remove(habit);
     });
   }
-  
+
   void uncheckAllCheckboxes() {
     habitStreamController.add(null);
   }
@@ -114,5 +129,11 @@ class _HabitListState extends State<HabitList> {
     var minutesPerDay = 1440;
     var pastMinutesToday = TimeOfDay.now().hour * 60 + TimeOfDay.now().minute;
     return minutesPerDay - pastMinutesToday;
+  }
+
+  Widget buildPopulatedHabitList(List<Habit> habitList) {
+    return Column(
+      children: <Widget>[for (var item in habitList) Text(item.task)],
+    );
   }
 }

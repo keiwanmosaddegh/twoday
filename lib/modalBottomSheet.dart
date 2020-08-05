@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'homepage/model/habit.dart';
+import 'homepage/bloc/habit_bloc.dart';
+import 'homepage/bloc/habit_event.dart';
+import 'homepage/bloc/bloc.dart';
 
 class ModalBottomSheet extends StatefulWidget {
   final Function addHabit;
@@ -40,9 +46,9 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
                     ),
                   ),
                   onPressed: () {
-                    widget.addHabit(newHabitController.text);
+                    BlocProvider.of<HabitBloc>(context).add(HabitAdded(Habit(newHabitController.text)));
                     Navigator.pop(context);
-                  },
+                  }
                 ),
               ],
             )
@@ -54,7 +60,6 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
 }
 
 class HabitTextField extends StatelessWidget {
-
   final TextEditingController newHabitController;
   HabitTextField({this.newHabitController});
 

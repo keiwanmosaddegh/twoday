@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:twodayrule/habit.dart';
+import 'package:twodayrule/homepage/model/habit.dart';
 
 class HabitCard extends StatefulWidget {
   final Habit habit;
@@ -91,7 +91,7 @@ class _HabitCardState extends State<HabitCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  widget.habit.habitName,
+                  widget.habit.task,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
