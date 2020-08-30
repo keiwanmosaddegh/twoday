@@ -8,6 +8,7 @@ void main() {
     create: (context) => HabitBloc()..add(HabitsLoaded()),
     child: MaterialApp(
       title: 'Two Day Rule',
+      debugShowCheckedModeBanner: false,
       home: HabitList(),
     ),
   ));
