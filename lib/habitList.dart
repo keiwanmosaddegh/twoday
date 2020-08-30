@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:twodayrule/Database.dart';
 import 'package:twodayrule/habitCard.dart';
-import 'package:twodayrule/homepage/model/habit.dart';
 import 'package:twodayrule/homepage/bloc/bloc.dart';
 import 'package:twodayrule/modalBottomSheet.dart';
 
@@ -11,10 +10,31 @@ class HabitList extends StatefulWidget {
   _HabitListState createState() => _HabitListState();
 }
 
-class _HabitListState extends State<HabitList> {
-  List<HabitCard> habitCardList = [];
-  StreamController<void> habitStreamController =
-      StreamController<void>.broadcast();
+class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      DBProvider.db.getLastVisit().then((lastVisit) {
+        var currentDateTime = DateTime.now();
+        var dateDiff = currentDateTime.difference(lastVisit).inDays;
+        if (dateDiff > 0) {
+          BlocProvider.of<HabitBloc>(context).add(HabitReseted(dateDiff));
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +50,7 @@ class _HabitListState extends State<HabitList> {
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12))),
               context: context,
-              builder: (context) => ModalBottomSheet(addHabit: addHabit),
+              builder: (context) => ModalBottomSheet(),
             );
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -50,33 +70,29 @@ class _HabitListState extends State<HabitList> {
               )),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.only(bottom: 30),
-            child: BlocConsumer<HabitBloc, HabitState>(
-              builder: (BuildContext context, HabitState state) {
-                if(state is HabitsLoadSuccess) {
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: state.habits.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(state.habits[index].task),
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return Text("Hello");
-                }
+      body: BlocBuilder<HabitBloc, HabitState>(
+        builder: (BuildContext context, HabitState state) {
+          if (state is HabitsLoadSuccess && state.habits.length > 0) {
+            return ListView.builder(
+              padding: EdgeInsets.only(bottom: 20),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: state.habits.length,
+              itemBuilder: (context, index) {
+                return HabitCard(
+                  id: state.habits[index].id,
+                );
               },
-              listener: (BuildContext context, HabitState state) {
-
-              },
-            ),
-        ),
+            );
+          } else {
+            return Padding(
+                padding: EdgeInsets.only(top: 10, left: 20),
+                child: Text(
+                  "Tap the + sign to add your first habit",
+                  style: TextStyle(fontSize: 16, color: Colors.grey[850]),
+                ));
+          }
+        },
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
@@ -94,46 +110,6 @@ class _HabitListState extends State<HabitList> {
           ],
         ),
       ),
-    );
-  }
-
-  void addHabit(String habitName) {
-    setState(() {
-      habitCardList.add(HabitCard(
-          habit: Habit(habitName),
-          habitStreamController: habitStreamController,
-          removeHabit: removeHabit));
-      timeUpdateHabit();
-    });
-  }
-
-  void removeHabit(@required HabitCard habit) {
-    setState(() {
-      habitCardList.remove(habit);
-    });
-  }
-
-  void uncheckAllCheckboxes() {
-    habitStreamController.add(null);
-  }
-
-  void timeUpdateHabit() async {
-    while (habitCardList.isNotEmpty) {
-      //Wait until midnight
-      await Future.delayed(Duration(minutes: minutesLeftOfDay()));
-      uncheckAllCheckboxes();
-    }
-  }
-
-  int minutesLeftOfDay() {
-    var minutesPerDay = 1440;
-    var pastMinutesToday = TimeOfDay.now().hour * 60 + TimeOfDay.now().minute;
-    return minutesPerDay - pastMinutesToday;
-  }
-
-  Widget buildPopulatedHabitList(List<Habit> habitList) {
-    return Column(
-      children: <Widget>[for (var item in habitList) Text(item.task)],
     );
   }
 }

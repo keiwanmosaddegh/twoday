@@ -1,16 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:twodayrule/Database.dart';
 import 'package:twodayrule/homepage/bloc/bloc.dart';
-import 'package:twodayrule/fakeRepo.dart';
 import 'package:twodayrule/homepage/model/habit.dart';
 
 class HabitBloc extends Bloc<HabitEvent, HabitState> {
-  FakeRepo fakeRepo;
-
-  HabitBloc() {
-    this.fakeRepo = new FakeRepo();
-  }
-
   @override
   HabitState get initialState => HabitsLoadInProgress();
 
@@ -24,11 +18,13 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       yield* _mapHabitUpdatedToState(event);
     } else if (event is HabitDeleted) {
       yield* _mapHabitDeletedToState(event);
+    } else if (event is HabitReseted) {
+      yield* _mapHabitResetedToState(event);
     }
   }
 
   Stream<HabitState> _mapHabitsLoadedToState() async* {
-    final habits = this.fakeRepo.habitList;
+    final habits = await DBProvider.db.getAllHabits();
     yield HabitsLoadSuccess(habits);
   }
 
@@ -37,7 +33,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       final List<Habit> updatedHabits =
           List.from((state as HabitsLoadSuccess).habits)..add(event.habit);
       yield HabitsLoadSuccess(updatedHabits);
-      fakeRepo.updateHabits(updatedHabits);
+      DBProvider.db.insertHabit(event.habit);
     }
   }
 
@@ -45,10 +41,10 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     if (state is HabitsLoadSuccess) {
       final List<Habit> updatedHabits =
           (state as HabitsLoadSuccess).habits.map((habit) {
-        return habit.task == event.habit.task ? event.habit : habit;
+        return habit.id == event.habit.id ? event.habit : habit;
       }).toList();
       yield HabitsLoadSuccess(updatedHabits);
-      fakeRepo.updateHabits(updatedHabits);
+      DBProvider.db.updateHabit(event.habit);
     }
   }
 
@@ -56,10 +52,22 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     if (state is HabitsLoadSuccess) {
       final updatedHabits = (state as HabitsLoadSuccess)
           .habits
-          .where((habit) => habit.task != event.habit.task)
+          .where((habit) => habit.id != event.habit.id)
           .toList();
       yield HabitsLoadSuccess(updatedHabits);
-      fakeRepo.updateHabits(updatedHabits);
+      DBProvider.db.deleteHabit(event.habit.id);
+    }
+  }
+
+  Stream<HabitState> _mapHabitResetedToState(HabitReseted event) async* {
+    if (state is HabitsLoadSuccess) {
+      final List<Habit> resetedHabits =
+          (state as HabitsLoadSuccess).habits.map((habit) {
+        var newHabit = habit.resetHabit(event.days);
+        DBProvider.db.updateHabit(newHabit);
+        return newHabit;
+      }).toList();
+      yield HabitsLoadSuccess(resetedHabits);
     }
   }
 }

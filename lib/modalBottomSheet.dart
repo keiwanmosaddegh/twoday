@@ -7,20 +7,15 @@ import 'homepage/bloc/habit_event.dart';
 import 'homepage/bloc/bloc.dart';
 
 class ModalBottomSheet extends StatefulWidget {
-  final Function addHabit;
-  ModalBottomSheet({this.addHabit});
-
   @override
   _ModalBottomSheetState createState() => _ModalBottomSheetState();
 }
 
 class _ModalBottomSheetState extends State<ModalBottomSheet> {
-
   final newHabitController = TextEditingController();
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     newHabitController.dispose();
     super.dispose();
   }
@@ -30,7 +25,8 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.fromLTRB(26, 16, 12, 8),
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -39,17 +35,15 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 FlatButton(
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                      color: Colors.blue
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.blue),
                     ),
-                  ),
-                  onPressed: () {
-                    BlocProvider.of<HabitBloc>(context).add(HabitAdded(Habit(newHabitController.text)));
-                    Navigator.pop(context);
-                  }
-                ),
+                    onPressed: () {
+                      BlocProvider.of<HabitBloc>(context)
+                          .add(HabitAdded(Habit(newHabitController.text)));
+                      Navigator.pop(context);
+                    }),
               ],
             )
           ],
@@ -61,6 +55,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
 
 class HabitTextField extends StatelessWidget {
   final TextEditingController newHabitController;
+
   HabitTextField({this.newHabitController});
 
   @override

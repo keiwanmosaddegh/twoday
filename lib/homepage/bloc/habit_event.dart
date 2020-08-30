@@ -45,3 +45,15 @@ class HabitDeleted extends HabitEvent {
   @override
   String toString() => 'HabitDeleted { habit: $habit }';
 }
+
+class HabitReseted extends HabitEvent {
+  final int days;
+
+  const HabitReseted(this.days);
+
+  @override
+  List<Object> get props => [days];
+
+  @override
+  String toString() => 'HabitsReseted { Days since last reset: $days }';
+}
