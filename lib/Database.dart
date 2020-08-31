@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -95,7 +96,7 @@ class DBProvider {
   getLastVisit() async {
     final db = await database;
 
-    var currentDateTime = DateTime.now();
+    var currentDateTime = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     var newLastVisit = new LastVisit(id: 1, lastVisit: currentDateTime.toString());
 
     var res = await db.rawQuery("SELECT * FROM $TABLE_GENERAL");

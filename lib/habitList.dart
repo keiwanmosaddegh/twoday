@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:twodayrule/Database.dart';
 import 'package:twodayrule/habitCard.dart';
 import 'package:twodayrule/homepage/bloc/bloc.dart';
@@ -27,7 +28,7 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       DBProvider.db.getLastVisit().then((lastVisit) {
-        var currentDateTime = DateTime.now();
+        var currentDateTime = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
         var dateDiff = currentDateTime.difference(lastVisit).inDays;
         if (dateDiff > 0) {
           BlocProvider.of<HabitBloc>(context).add(HabitReseted(dateDiff));
