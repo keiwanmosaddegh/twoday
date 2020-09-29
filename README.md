@@ -8,9 +8,7 @@ It's very simple. Never skip the thing you're trying to accomplish two days in a
 # Okey nice. So how does the app work?
 Just like that! I've developed a habit tracker, which tracks your activites, and changes color based on urgency.
 
-![Image of The Two Day Rule #1](https://lh3.googleusercontent.com/BqrIR2qledjTVhmjxXqkq9NeKJSTTSN8gDifZ9m6e0WvMwRu6tuOZkP48658WdsPIwIT3xS834XW5w=w2256-h1290-rw)
-
-<img src="https://lh3.googleusercontent.com/BqrIR2qledjTVhmjxXqkq9NeKJSTTSN8gDifZ9m6e0WvMwRu6tuOZkP48658WdsPIwIT3xS834XW5w=w2256-h1290-rw" alt="alt text" width="200"/>
+<img src="https://lh3.googleusercontent.com/BqrIR2qledjTVhmjxXqkq9NeKJSTTSN8gDifZ9m6e0WvMwRu6tuOZkP48658WdsPIwIT3xS834XW5w=w2256-h1290-rw" width="450"/>
 
 A fresh, not yet executed on activity, begins uncolored. When ticking it off for the day, it turns green. The day later, yellow. Two days later, red.
 
