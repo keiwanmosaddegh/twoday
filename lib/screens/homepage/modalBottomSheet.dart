@@ -58,6 +58,7 @@ class HabitTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      textCapitalization: TextCapitalization.sentences,
       controller: newHabitController,
       decoration: InputDecoration(
           hintText: "New habit",
