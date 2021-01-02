@@ -78,29 +78,32 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
       body: BlocBuilder<HabitBloc, HabitState>(
         builder: (BuildContext context, HabitState state) {
           if (state is HabitsLoadSuccess && state.habits.length > 0) {
-            return ListView.builder(
-              padding: EdgeInsets.only(bottom: 20),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: state.habits.length,
-              itemBuilder: (context, index) {
-                final habit = state.habits[index];
-                return Dismissible(
-                    key: Key(habit.id),
-                    onDismissed: (direction) =>
-                        BlocProvider.of<HabitBloc>(context)
-                            .add(HabitDeleted(habit)),
-                    child: HabitCard(
-                      id: habit.id,
-                    ),
-                    background: Container(
-                        margin: EdgeInsets.only(top: 16),
-                        color: Colors.red[100]),
-                    confirmDismiss: (direction) async {
-                      return await confirmHabitDelete(context);
-                    },
-                );
-              },
+            return RefreshIndicator(
+              onRefresh: refreshHabits,
+              child: ListView.builder(
+                padding: EdgeInsets.only(bottom: 20),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: state.habits.length,
+                itemBuilder: (context, index) {
+                  final habit = state.habits[index];
+                  return Dismissible(
+                      key: Key(habit.id),
+                      onDismissed: (direction) =>
+                          BlocProvider.of<HabitBloc>(context)
+                              .add(HabitDeleted(habit)),
+                      child: HabitCard(
+                        id: habit.id,
+                      ),
+                      background: Container(
+                          margin: EdgeInsets.only(top: 16),
+                          color: Colors.red[100]),
+                      confirmDismiss: (direction) async {
+                        return await confirmHabitDelete(context);
+                      },
+                  );
+                },
+              ),
             );
           } else {
             return Padding(
@@ -162,5 +165,18 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
         );
       },
     );
+  }
+
+  Future<void> refreshHabits() async {
+    DBProvider.db.getLastVisit().then((lastVisit) {
+      var currentDateTime =
+      DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+      var dateDiff = currentDateTime
+          .difference(lastVisit)
+          .inDays;
+      if (dateDiff > 0) {
+        BlocProvider.of<HabitBloc>(context).add(HabitReseted(dateDiff));
+      }
+    });
   }
 }
