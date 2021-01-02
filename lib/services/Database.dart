@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:twodayrule/homepage/model/lastVisit.dart';
-
-import 'homepage/model/habit.dart';
+import 'package:twodayrule/models/habit.dart';
+import 'package:twodayrule/models/lastVisit.dart';
 
 class DBProvider {
   static final _dbName = 'habitDB.db';

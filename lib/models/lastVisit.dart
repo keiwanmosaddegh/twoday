@@ -1,4 +1,4 @@
-import 'package:twodayrule/Database.dart';
+import 'package:twodayrule/services/Database.dart';
 
 class LastVisit {
   final int id;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:twodayrule/homepage/bloc/bloc.dart';
-import 'habitList.dart';
+import 'package:twodayrule/bloc/blocs.dart';
+import 'package:twodayrule/screens/homepage/habitList.dart';
+
 
 void main() {
   runApp(BlocProvider(

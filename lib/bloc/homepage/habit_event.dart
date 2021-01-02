@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:twodayrule/homepage/model/habit.dart';
+import 'package:twodayrule/models/habit.dart';
 
 abstract class HabitEvent extends Equatable {
   const HabitEvent();

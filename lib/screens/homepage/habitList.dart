@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:twodayrule/Database.dart';
-import 'package:twodayrule/habitCard.dart';
-import 'package:twodayrule/homepage/bloc/bloc.dart';
-import 'package:twodayrule/modalBottomSheet.dart';
+import 'package:twodayrule/bloc/blocs.dart';
+import 'package:twodayrule/screens/homepage/habitCard.dart';
+import 'package:twodayrule/screens/homepage/modalBottomSheet.dart';
+import 'package:twodayrule/services/Database.dart';
 
 class HabitList extends StatefulWidget {
   @override
@@ -28,8 +29,11 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       DBProvider.db.getLastVisit().then((lastVisit) {
-        var currentDateTime = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
-        var dateDiff = currentDateTime.difference(lastVisit).inDays;
+        var currentDateTime =
+        DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+        var dateDiff = currentDateTime
+            .difference(lastVisit)
+            .inDays;
         if (dateDiff > 0) {
           BlocProvider.of<HabitBloc>(context).add(HabitReseted(dateDiff));
         }
@@ -80,8 +84,21 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
               shrinkWrap: true,
               itemCount: state.habits.length,
               itemBuilder: (context, index) {
-                return HabitCard(
-                  id: state.habits[index].id,
+                final habit = state.habits[index];
+                return Dismissible(
+                    key: Key(habit.id),
+                    onDismissed: (direction) =>
+                        BlocProvider.of<HabitBloc>(context)
+                            .add(HabitDeleted(habit)),
+                    child: HabitCard(
+                      id: habit.id,
+                    ),
+                    background: Container(
+                        margin: EdgeInsets.only(top: 16),
+                        color: Colors.red[100]),
+                    confirmDismiss: (direction) async {
+                      return await confirmHabitDelete(context);
+                    },
                 );
               },
             );
@@ -111,6 +128,39 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
           ],
         ),
       ),
+    );
+  }
+
+  Future<bool> confirmHabitDelete(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[850],
+          title: const Text("Are you sure you wish to delete this habit?",
+            style: TextStyle(color: Colors.white),),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlatButton(
+                  onPressed: () =>
+                      Navigator.of(context).pop(true),
+                  child: const Text("DELETE", style: TextStyle(color: Colors.white),),
+                  shape: RoundedRectangleBorder(side: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                      style: BorderStyle.solid
+                  ), borderRadius: BorderRadius.circular(50)),
+              ),
+              FlatButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false),
+                  child: const Text("CANCEL", style: TextStyle(color: Colors.white),),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

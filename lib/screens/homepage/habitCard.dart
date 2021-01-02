@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:twodayrule/homepage/bloc/bloc.dart';
+import 'package:twodayrule/bloc/blocs.dart';
 
 class HabitCard extends StatefulWidget {
   final String id;
@@ -37,11 +37,11 @@ class _HabitCardState extends State<HabitCard> {
         margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Padding(
           padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     habit.task,
@@ -51,33 +51,28 @@ class _HabitCardState extends State<HabitCard> {
                       color: Colors.grey[850],
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text("Current streak: ${habit.currentStreak}"),
-                      SizedBox(height: 6),
-                      Text("Longest streak: ${habit.longestStreak}")
+                      SizedBox(width: 30),
+                      Text("Longest streak: ${habit.longestStreak}"),
                     ],
                   ),
-                  Row(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => BlocProvider.of<HabitBloc>(context)
-                            .add(HabitDeleted(habit)),
-                      ),
-                      Checkbox(
-                        value: habit.complete,
-                        activeColor: Colors.grey[850],
-                        onChanged: (bool value) {
-                          BlocProvider.of<HabitBloc>(context).add(
-                              HabitUpdated(habit.copyWith(complete: value)));
-                        },
-                      ),
-                    ],
-                  )
                 ],
-              )
+              ),
+              Transform.scale(
+                scale: 1.6,
+                child: Checkbox(
+                  value: habit.complete,
+                  activeColor: Colors.grey[850],
+                  onChanged: (bool value) {
+                    BlocProvider.of<HabitBloc>(context)
+                        .add(HabitUpdated(habit.copyWith(complete: value)));
+                  },
+                ),
+              ),
             ],
           ),
         ),

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:twodayrule/Database.dart';
-import 'package:twodayrule/homepage/bloc/bloc.dart';
-import 'package:twodayrule/homepage/model/habit.dart';
+import 'package:twodayrule/bloc/blocs.dart';
+import 'package:twodayrule/models/habit.dart';
+import 'package:twodayrule/services/Database.dart';
 
 class HabitBloc extends Bloc<HabitEvent, HabitState> {
   @override

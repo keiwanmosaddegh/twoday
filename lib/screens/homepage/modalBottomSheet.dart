@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'homepage/model/habit.dart';
-import 'homepage/bloc/habit_bloc.dart';
-import 'homepage/bloc/habit_event.dart';
-import 'homepage/bloc/bloc.dart';
+import 'package:twodayrule/bloc/blocs.dart';
+import 'package:twodayrule/models/habit.dart';
 
 class ModalBottomSheet extends StatefulWidget {
   @override
