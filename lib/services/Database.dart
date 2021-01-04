@@ -73,6 +73,13 @@ class DBProvider {
     return habitList;
   }
 
+  getHabit(Habit habit) async {
+    final db = await database;
+    var res = await db.rawQuery("SELECT * FROM $TABLE_HABIT WHERE $COLUMN_ID = ?", [habit.id]);
+    Habit queriedHabit = Habit.fromMap(res[0]);
+    return queriedHabit;
+  }
+
   insertHabit(Habit habit) async {
     final db = await database;
     var res = await db.insert(TABLE_HABIT, habit.toMap());

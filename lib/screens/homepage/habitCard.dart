@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twodayrule/bloc/blocs.dart';
+import 'package:twodayrule/screens/details_screen/detailsScreen.dart';
 
 class HabitCard extends StatefulWidget {
   final String id;
@@ -35,45 +36,57 @@ class _HabitCardState extends State<HabitCard> {
       return Card(
         color: cardStyleDaysSinceLastComplete(habit.daysSinceLastComplete),
         margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    habit.task,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[850],
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    create: (context) => DetailsBloc()..add(DetailsLoaded(habit)),
+                    child: DetailsScreen(),
+                  ),
+                ));
+          },
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      habit.task,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[850],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Current streak: ${habit.currentStreak}"),
-                      SizedBox(width: 30),
-                      Text("Longest streak: ${habit.longestStreak}"),
-                    ],
-                  ),
-                ],
-              ),
-              Transform.scale(
-                scale: 1.6,
-                child: Checkbox(
-                  value: habit.complete,
-                  activeColor: Colors.grey[850],
-                  onChanged: (bool value) {
-                    BlocProvider.of<HabitBloc>(context)
-                        .add(HabitUpdated(habit.copyWith(complete: value)));
-                  },
+                    SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Current streak: ${habit.currentStreak}"),
+                        SizedBox(width: 30),
+                        Text("Longest streak: ${habit.longestStreak}"),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                Transform.scale(
+                  scale: 1.6,
+                  child: Checkbox(
+                    value: habit.complete,
+                    activeColor: Colors.grey[850],
+                    onChanged: (bool value) {
+                      BlocProvider.of<HabitBloc>(context)
+                          .add(HabitUpdated(habit.copyWith(complete: value)));
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

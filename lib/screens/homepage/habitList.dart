@@ -17,6 +17,7 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    refreshHabits();
   }
 
   @override
@@ -28,16 +29,7 @@ class _HabitListState extends State<HabitList> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      DBProvider.db.getLastVisit().then((lastVisit) {
-        var currentDateTime =
-        DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
-        var dateDiff = currentDateTime
-            .difference(lastVisit)
-            .inDays;
-        if (dateDiff > 0) {
-          BlocProvider.of<HabitBloc>(context).add(HabitReseted(dateDiff));
-        }
-      });
+      refreshHabits();
     }
   }
 
