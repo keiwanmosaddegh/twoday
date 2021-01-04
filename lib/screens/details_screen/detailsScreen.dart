@@ -4,6 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twodayrule/bloc/blocs.dart';
 
 class DetailsScreen extends StatelessWidget {
+  final String id;
+
+  DetailsScreen({this.id});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,13 +27,12 @@ class DetailsScreen extends StatelessWidget {
                 )),
           ),
         ),
-        body: BlocBuilder<DetailsBloc, DetailsState>(
-            builder: (BuildContext context, DetailsState state) {
-              if (state is DetailsLoadSuccess) {
-                final habit = state.habit;
-                return Text("habit: ${habit.id}");
-              }
-              return Text("Hej");
+        body: BlocBuilder<HabitBloc, HabitState>(
+            builder: (BuildContext context, HabitState state) {
+          final habit = (state as HabitsLoadSuccess)
+              .habits
+              .firstWhere((habit) => habit.id == id, orElse: () => null);
+          return Text("habit: ${habit.id}");
         }));
   }
 }

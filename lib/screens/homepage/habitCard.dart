@@ -41,10 +41,7 @@ class _HabitCardState extends State<HabitCard> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => DetailsBloc()..add(DetailsLoaded(habit)),
-                    child: DetailsScreen(),
-                  ),
+                  builder: (context) => DetailsScreen(id: widget.id),
                 ));
           },
           child: Padding(
