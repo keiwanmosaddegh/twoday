@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:twodayrule/bloc/blocs.dart';
+import 'package:twodayrule/common/constants.dart';
+import 'package:twodayrule/cubit/habit_cubit.dart';
+import 'package:twodayrule/cubit/habit_details_cubit.dart';
 import 'package:twodayrule/screens/details_screen/detailsScreen.dart';
 
 class HabitCard extends StatefulWidget {
@@ -13,35 +15,38 @@ class HabitCard extends StatefulWidget {
 }
 
 class _HabitCardState extends State<HabitCard> {
-  Color cardStyleDaysSinceLastComplete(int daysSinceLastComplete) {
-    switch (daysSinceLastComplete) {
+  Color cardStyleDaysSinceLastDone(int daysSinceLastDone) {
+    switch (daysSinceLastDone) {
       case 0:
-        return Colors.green[200];
+        return kSecondary;
       case 1:
-        return Colors.orange[200];
+        return kYellow;
       case 2:
-        return Colors.red[200];
+        return kError;
       default:
-        return Colors.white;
+        return kOverlay;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HabitBloc, HabitState>(
+    return BlocBuilder<HabitCubit, HabitState>(
         builder: (BuildContext context, HabitState state) {
-      final habit = (state as HabitsLoadSuccess)
+      final habit = (state as HabitsLoaded)
           .habits
           .firstWhere((habit) => habit.id == widget.id, orElse: () => null);
       return Card(
-        color: cardStyleDaysSinceLastComplete(habit.daysSinceLastComplete),
+        color: cardStyleDaysSinceLastDone(habit.daysSinceLastDone),
         margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: InkWell(
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DetailsScreen(id: widget.id),
+                  builder: (context) => BlocProvider(
+                      create: (context) =>
+                          HabitDetailsCubit()..getHabitDetails(widget.id),
+                      child: DetailsScreen(id: widget.id)),
                 ));
           },
           child: Padding(
@@ -57,29 +62,49 @@ class _HabitCardState extends State<HabitCard> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey[850],
+                        color: habit.daysSinceLastDone < 3
+                            ? kOnSecondary
+                            : kOnBackground,
                       ),
                     ),
                     SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("Current streak: ${habit.currentStreak}"),
+                        Text(
+                          "Current streak: ${habit.currentStreak}",
+                          style: TextStyle(
+                              color: habit.daysSinceLastDone < 3
+                                  ? kOnSecondary
+                                  : kOnBackground),
+                        ),
                         SizedBox(width: 30),
-                        Text("Longest streak: ${habit.longestStreak}"),
+                        Text(
+                          "Longest streak: ${habit.longestStreak}",
+                          style: TextStyle(
+                              color: habit.daysSinceLastDone < 3
+                                  ? kOnSecondary
+                                  : kOnBackground),
+                        ),
                       ],
                     ),
                   ],
                 ),
                 Transform.scale(
                   scale: 1.6,
-                  child: Checkbox(
-                    value: habit.complete,
-                    activeColor: Colors.grey[850],
-                    onChanged: (bool value) {
-                      BlocProvider.of<HabitBloc>(context)
-                          .add(HabitUpdated(habit.copyWith(complete: value)));
-                    },
+                  child: Theme(
+                    data: ThemeData(
+                        unselectedWidgetColor: habit.daysSinceLastDone < 3
+                            ? kOnSecondary
+                            : kOnBackground),
+                    child: Checkbox(
+                      value: habit.done,
+                      activeColor: kOverlay,
+                      onChanged: (bool value) {
+                        BlocProvider.of<HabitCubit>(context)
+                            .doneHabit(habit.id, value);
+                      },
+                    ),
                   ),
                 ),
               ],
