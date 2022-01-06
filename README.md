@@ -1,11 +1,11 @@
-# The Two Day Rule
+# twoday
 
 A new project, inspired by Matt D'avella's *The two day rule* video.
 
 # So, what is The Two Day Rule?
 It's very simple. Never skip the thing you're trying to accomplish two days in a row. It makes a lot of sense, because one missed day is really not a big deal. But a second makes it that much easier to miss a third day, a week, a month. At which point you don't really remember the activity at all.
 
-# Okey nice. So how does the app work?
+# Okey nice. So how does the _twoday_ app work?
 Just like that! I've developed a habit tracker, which tracks your activites, and changes color based on urgency.
 
 <img src="https://i.ibb.co/R7HGkS4/1.png" width="400"/>
