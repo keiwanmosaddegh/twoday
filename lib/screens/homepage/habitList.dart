@@ -18,11 +18,9 @@ class _HabitListState extends State<HabitList> {
     return Scaffold(
       backgroundColor: kBackground,
       floatingActionButton: FloatingActionButton(
-          backgroundColor: kPrimaryVariant,
           child: Icon(Icons.add),
           onPressed: () {
             showModalBottomSheet(
-              backgroundColor: kOverlay,
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -61,19 +59,16 @@ class _HabitListState extends State<HabitList> {
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        color: kOverlay,
         shape: CircularNotchedRectangle(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.settings),
-              color: kOnSurface,
               onPressed: () {},
             ),
             IconButton(
               icon: Icon(Icons.more_vert),
-              color: kOnSurface,
               onPressed: () {},
             )
           ],
@@ -125,10 +120,9 @@ class _HabitListState extends State<HabitList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: kPrimaryVariant,
           title: Text(
             "Confirm deletion of habit?",
-            style: TextStyle(color: kOnSurface),
+            style: TextStyle(color: kOnBackground),
           ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -137,19 +131,19 @@ class _HabitListState extends State<HabitList> {
                   onPressed: () => Navigator.of(context).pop(false),
                   child: Text(
                     "CANCEL",
-                    style: TextStyle(color: kOnSurface),
+                    style: TextStyle(color: kOnBackground),
                   )),
               TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
                   child: Text(
                     "DELETE",
                     style: TextStyle(
-                      color: kOnPrimary,
+                      color: kOnBackground,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   style: TextButton.styleFrom(
-                    backgroundColor: kOnBackground,
+                    backgroundColor: kRed,
                     padding: EdgeInsets.only(left: 20, right: 20),
                   )),
             ],

@@ -33,7 +33,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
                 TextButton(
                     child: Text(
                       "Save",
-                      style: TextStyle(color: kSecondary),
+                      style: TextStyle(color: kBlue),
                     ),
                     onPressed: () async {
                       await BlocProvider.of<HabitCubit>(context)
@@ -57,10 +57,9 @@ class HabitTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      cursorColor: kOnSurface,
-      style: TextStyle(color: kOnSurface),
       textCapitalization: TextCapitalization.sentences,
       controller: newHabitController,
+      cursorColor: kOnBackground,
       decoration: InputDecoration(
           hintText: "New habit",
           border: InputBorder.none,

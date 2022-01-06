@@ -93,12 +93,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Card buildStatisticsLabel() {
     return Card(
-      color: kPrimaryVariant,
+      color: kWhite,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 10.0, 10.0, 10.0),
         child: Text(
           "Statistics of ${DateTime.now().year}",
-          style: TextStyle(fontSize: 16, color: kOnBackground),
+          style: TextStyle(fontSize: 16, color: kOnWhite),
         ),
       ),
     );
@@ -125,7 +125,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Widget buildQuarterStatistics({@required int quarter, @required int amount}) {
     return Card(
-      color: kOverlay,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
         child: Column(
@@ -133,9 +132,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             Text(
               "Quarter $quarter",
               style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  color: kOnBackground),
+                  fontSize: 24, fontWeight: FontWeight.w400, color: kOnWhite),
             ),
             SizedBox(
               height: 8,
@@ -143,9 +140,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             Text(
               "$amount",
               style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w800,
-                  color: kOnBackground),
+                  fontSize: 42, fontWeight: FontWeight.w800, color: kOnWhite),
             ),
           ],
         ),

@@ -18,13 +18,13 @@ class _HabitCardState extends State<HabitCard> {
   Color cardStyleDaysSinceLastDone(int daysSinceLastDone) {
     switch (daysSinceLastDone) {
       case 0:
-        return kSecondary;
+        return kGreen;
       case 1:
         return kYellow;
       case 2:
-        return kError;
+        return kRed;
       default:
-        return kOverlay;
+        return kWhite;
     }
   }
 
@@ -60,12 +60,9 @@ class _HabitCardState extends State<HabitCard> {
                     Text(
                       habit.task,
                       style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: habit.daysSinceLastDone < 3
-                            ? kOnSecondary
-                            : kOnBackground,
-                      ),
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: kOnWhite),
                     ),
                     SizedBox(height: 6),
                     Row(
@@ -73,18 +70,12 @@ class _HabitCardState extends State<HabitCard> {
                       children: <Widget>[
                         Text(
                           "Current streak: ${habit.currentStreak}",
-                          style: TextStyle(
-                              color: habit.daysSinceLastDone < 3
-                                  ? kOnSecondary
-                                  : kOnBackground),
+                          style: TextStyle(color: kOnWhite),
                         ),
                         SizedBox(width: 30),
                         Text(
                           "Longest streak: ${habit.longestStreak}",
-                          style: TextStyle(
-                              color: habit.daysSinceLastDone < 3
-                                  ? kOnSecondary
-                                  : kOnBackground),
+                          style: TextStyle(color: kOnWhite),
                         ),
                       ],
                     ),
@@ -93,13 +84,10 @@ class _HabitCardState extends State<HabitCard> {
                 Transform.scale(
                   scale: 1.6,
                   child: Theme(
-                    data: ThemeData(
-                        unselectedWidgetColor: habit.daysSinceLastDone < 3
-                            ? kOnSecondary
-                            : kOnBackground),
+                    data: ThemeData(unselectedWidgetColor: kOnWhite),
                     child: Checkbox(
                       value: habit.done,
-                      activeColor: kOverlay,
+                      activeColor: kOnWhite,
                       onChanged: (bool value) {
                         BlocProvider.of<HabitCubit>(context)
                             .doneHabit(habit.id, value);

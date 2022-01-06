@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-final kPrimary = Color(0xffbb86fc);
-final kPrimaryVariant = Color(0xff3700b3);
-final kSecondary = Color(0xff03dac6);
-final kBackground = Color(0xff121212);
-final kSurface = Color(0xff121212);
-final kError = Color(0xffcf6679);
-final kOnBackground = Color(0xffffffff);
-final kOnSurface = Color(0xffffffff);
-final kOnPrimary = Color(0xff000000);
-final kOnSecondary = Color(0xff000000);
-final kOnError = Color(0xff000000);
-final kOverlay = Color(0xff373737);
-final kYellow = Color(0xffffbf00);
 final kTransparent = Colors.transparent;
 final kHintText = Colors.grey[400];
+final kBlue = Colors.blue;
+
+final kGreen = Colors.green[200];
+final kYellow = Colors.orange[200];
+final kRed = Colors.red[200];
+
+final kOnWhite = Colors.grey[850];
+final kWhite = Color(0xffffffff);
+
+final kOnBackground = Colors.grey[850];
+final kBackground = Colors.grey[200];
