@@ -1,4 +1,4 @@
-package com.example.twodayrule
+package com.example.twoday
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

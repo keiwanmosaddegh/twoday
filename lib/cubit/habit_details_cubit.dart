@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:twodayrule/models/habitDetails.dart';
-import 'package:twodayrule/services/Database.dart';
+import 'package:twoday/models/habitDetails.dart';
+import 'package:twoday/services/Database.dart';
 
 part 'habit_details_state.dart';
 

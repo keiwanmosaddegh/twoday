@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:twodayrule/common/constants.dart';
-import 'package:twodayrule/cubit/habit_cubit.dart';
-import 'package:twodayrule/models/habit.dart';
+import 'package:twoday/common/constants.dart';
+import 'package:twoday/cubit/habit_cubit.dart';
+import 'package:twoday/models/habit.dart';
 
 class ModalBottomSheet extends StatefulWidget {
   @override

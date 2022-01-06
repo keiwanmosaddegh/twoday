@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:twodayrule/services/Database.dart';
+import 'package:twoday/services/Database.dart';
 
 class Habit extends Equatable {
   final String id;

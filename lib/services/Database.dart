@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:twodayrule/models/habitRecord.dart';
-import 'package:twodayrule/models/habit.dart';
+import 'package:twoday/models/habitRecord.dart';
+import 'package:twoday/models/habit.dart';
 
 class DBProvider {
   static final _dbName = 'habitDB.db';

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
-import 'package:twodayrule/services/Database.dart';
+import 'package:twoday/services/Database.dart';
 
 class HabitRecord {
   final String id;
