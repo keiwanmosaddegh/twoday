@@ -94,12 +94,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Card buildStatisticsLabel() {
     return Card(
       color: kWhite,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 10.0, 10.0, 10.0),
-        child: Text(
-          "Statistics of ${DateTime.now().year}",
-          style: TextStyle(fontSize: 16, color: kOnWhite),
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: Icon(Icons.chevron_left),
+            onPressed: () {},
+          ),
+          Text(
+            "Statistics of ${DateTime.now().year}",
+            style: TextStyle(fontSize: 16, color: kOnWhite),
+          ),
+          IconButton(
+            icon: Icon(Icons.chevron_right),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }
