@@ -202,7 +202,8 @@ class DBProvider {
     };
   }
 
-  Future<Map<String, int>> getHabitDetails(String habitId) async {
+  Future<Map<String, dynamic>> getHabitDetails(
+      {String habitId, int year}) async {
     final habitRecords = await getHabitRecords(habitId);
     var q1Count = 0;
     var q2Count = 0;
@@ -210,7 +211,7 @@ class DBProvider {
     var q4Count = 0;
 
     for (final record in habitRecords) {
-      if (record.date.year == DateTime.now().year) {
+      if (record.date.year == year) {
         if (record.date.month <= 3) {
           q1Count++;
         } else if (record.date.month >= 4 && record.date.month <= 6) {
@@ -224,10 +225,13 @@ class DBProvider {
     }
 
     return {
-      "q1Count": q1Count,
-      "q2Count": q2Count,
-      "q3Count": q3Count,
-      "q4Count": q4Count
+      "year": year,
+      "quarterStatistics": {
+        "q1Count": q1Count,
+        "q2Count": q2Count,
+        "q3Count": q3Count,
+        "q4Count": q4Count
+      }
     };
   }
 }

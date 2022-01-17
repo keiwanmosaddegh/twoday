@@ -5,6 +5,7 @@ import 'package:twoday/common/constants.dart';
 import 'package:twoday/cubit/habit_cubit.dart';
 import 'package:twoday/cubit/habit_details_cubit.dart';
 import 'package:twoday/models/habit.dart';
+import 'package:twoday/models/habitDetails.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String id;
@@ -72,11 +73,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              buildStatisticsLabel(),
               BlocBuilder<HabitDetailsCubit, HabitDetailsState>(
                 builder: (BuildContext context, HabitDetailsState state) {
                   if (state is HabitDetailsLoaded) {
-                    return buildStatistics(state);
+                    return buildStatisticsModule(state);
                   } else if (state is HabitDetailsLoading) {
                     return buildHabitDetailsLoadingIndicator();
                   } else {
@@ -91,7 +91,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  Card buildStatisticsLabel() {
+  Card buildStatisticsLabel(HabitDetails habitDetails) {
     return Card(
       color: kWhite,
       child: Row(
@@ -99,37 +99,47 @@ class _DetailsScreenState extends State<DetailsScreen> {
         children: [
           IconButton(
             icon: Icon(Icons.chevron_left),
-            onPressed: () {},
+            onPressed: () async {
+              await BlocProvider.of<HabitDetailsCubit>(context).getHabitDetails(
+                  habitId: habitDetails.habitId, year: habitDetails.year - 1);
+            },
           ),
           Text(
-            "Statistics of ${DateTime.now().year}",
+            "Statistics of ${habitDetails.year}",
             style: TextStyle(fontSize: 16, color: kOnWhite),
           ),
           IconButton(
             icon: Icon(Icons.chevron_right),
-            onPressed: () {},
+            onPressed: () async {
+              await BlocProvider.of<HabitDetailsCubit>(context).getHabitDetails(
+                  habitId: habitDetails.habitId, year: habitDetails.year + 1);
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget buildStatistics(HabitDetailsLoaded state) {
+  Widget buildStatisticsModule(HabitDetailsLoaded state) {
     final habitDetails = state.habitDetails;
-    return Expanded(
-      child: GridView.count(
-        crossAxisCount: 2,
-        children: [
-          buildQuarterStatistics(
-              quarter: 1, amount: habitDetails.quarterStatistics["q1Count"]),
-          buildQuarterStatistics(
-              quarter: 2, amount: habitDetails.quarterStatistics["q2Count"]),
-          buildQuarterStatistics(
-              quarter: 3, amount: habitDetails.quarterStatistics["q3Count"]),
-          buildQuarterStatistics(
-              quarter: 4, amount: habitDetails.quarterStatistics["q4Count"]),
-        ],
-      ),
+    return Column(
+      children: [
+        buildStatisticsLabel(state.habitDetails),
+        GridView.count(
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          children: [
+            buildQuarterStatistics(
+                quarter: 1, amount: habitDetails.quarterStatistics["q1Count"]),
+            buildQuarterStatistics(
+                quarter: 2, amount: habitDetails.quarterStatistics["q2Count"]),
+            buildQuarterStatistics(
+                quarter: 3, amount: habitDetails.quarterStatistics["q3Count"]),
+            buildQuarterStatistics(
+                quarter: 4, amount: habitDetails.quarterStatistics["q4Count"]),
+          ],
+        ),
+      ],
     );
   }
 

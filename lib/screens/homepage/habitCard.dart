@@ -44,8 +44,9 @@ class _HabitCardState extends State<HabitCard> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => BlocProvider(
-                      create: (context) =>
-                          HabitDetailsCubit()..getHabitDetails(widget.id),
+                      create: (context) => HabitDetailsCubit()
+                        ..getHabitDetails(
+                            habitId: widget.id, year: DateTime.now().year),
                       child: DetailsScreen(id: widget.id)),
                 ));
           },
