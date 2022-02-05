@@ -126,6 +126,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       children: [
         buildStatisticsLabel(state.habitDetails),
         GridView.count(
+          childAspectRatio: 5.0,
           shrinkWrap: true,
           crossAxisCount: 2,
           children: [
@@ -145,25 +146,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Widget buildQuarterStatistics({@required int quarter, @required int amount}) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 36, 0, 0),
-        child: Column(
-          children: [
-            Text(
-              "Quarter $quarter",
-              style: TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.w400, color: kOnWhite),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            "Q$quarter",
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w400, color: kOnWhite),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+              child: Text(
+                "$amount",
+                style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w800, color: kOnWhite),
+              ),
             ),
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              "$amount",
-              style: TextStyle(
-                  fontSize: 42, fontWeight: FontWeight.w800, color: kOnWhite),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
