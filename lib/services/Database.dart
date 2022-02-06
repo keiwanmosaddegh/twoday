@@ -209,9 +209,11 @@ class DBProvider {
     var q2Count = 0;
     var q3Count = 0;
     var q4Count = 0;
+    List<DateTime> recordsForYear = [];
 
     for (final record in habitRecords) {
       if (record.date.year == year) {
+        recordsForYear.add(record.date);
         if (record.date.month <= 3) {
           q1Count++;
         } else if (record.date.month >= 4 && record.date.month <= 6) {
@@ -231,7 +233,8 @@ class DBProvider {
         "q2Count": q2Count,
         "q3Count": q3Count,
         "q4Count": q4Count
-      }
+      },
+      "recordsForYear": recordsForYear
     };
   }
 }

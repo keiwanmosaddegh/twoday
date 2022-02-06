@@ -149,13 +149,74 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 calendarController.previousPage();
               }
             },
+            builders: CalendarBuilders(
+              dayBuilder: (context, date, events) {
+                if (events != null) {
+                  return Card(
+                    color: kGreen,
+                    child: Center(
+                      child: Text("${date.day}"),
+                    ),
+                  );
+                }
+                return Card(
+                  child: Center(
+                    child: Text("${date.day}"),
+                  ),
+                );
+              },
+              todayDayBuilder: (context, date, events) {
+                if (events != null) {
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      side: BorderSide(
+                        color: Colors.green[300],
+                        width: 3,
+                      ),
+                    ),
+                    color: kGreen,
+                    child: Center(
+                      child: Text(
+                        "${date.day}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  );
+                }
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                      color: Colors.grey[300],
+                      width: 3,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "${date.day}",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              },
+              singleMarkerBuilder: (context, date, event) => SizedBox.shrink(),
+            ),
             startDay: DateTime(habitDetails.year, 1, 1),
             endDay: DateTime(habitDetails.year, 12, 31),
-            calendarStyle: CalendarStyle(outsideDaysVisible: false),
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(color: kOnWhite),
+              weekendStyle: TextStyle(color: kOnWhite),
+            ),
+            calendarStyle: CalendarStyle(
+              outsideDaysVisible: false,
+            ),
             calendarController: calendarController,
             startingDayOfWeek: StartingDayOfWeek.monday,
             headerStyle: HeaderStyle(
                 formatButtonVisible: false, centerHeaderTitle: true),
+            events: Map.fromIterable(habitDetails.recordsForYear,
+                key: (e) => e, value: (e) => [true]),
           ),
         )
       ],

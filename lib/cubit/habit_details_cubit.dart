@@ -16,7 +16,8 @@ class HabitDetailsCubit extends Cubit<HabitDetailsState> {
       final habitDetails = HabitDetails(
           habitId: habitId,
           year: habitDetailsResult["year"],
-          quarterStatistics: habitDetailsResult["quarterStatistics"]);
+          quarterStatistics: habitDetailsResult["quarterStatistics"],
+          recordsForYear: habitDetailsResult["recordsForYear"]);
       emit(HabitDetailsLoaded(habitDetails));
     } catch (e) {
       emit(HabitDetailsError(e.toString()));
