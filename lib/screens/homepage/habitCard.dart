@@ -90,8 +90,10 @@ class _HabitCardState extends State<HabitCard> {
                       value: habit.done,
                       activeColor: kOnWhite,
                       onChanged: (bool value) {
-                        BlocProvider.of<HabitCubit>(context)
-                            .doneHabit(habit.id, value);
+                        BlocProvider.of<HabitCubit>(context).toggleHabitEntry(
+                            habitId: habit.id,
+                            value: value,
+                            dateTime: DateTime.now());
                       },
                     ),
                   ),

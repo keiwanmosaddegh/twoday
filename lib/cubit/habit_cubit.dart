@@ -48,9 +48,10 @@ class HabitCubit extends Cubit<HabitState> {
     }
   }
 
-  Future<void> doneHabit(String habitId, bool value) async {
+  Future<void> toggleHabitEntry(
+      {String habitId, bool value, DateTime dateTime}) async {
     try {
-      await DBProvider.db.updateHabitRecord(habitId, value);
+      await DBProvider.db.toggleHabitEntry(habitId, value, dateTime);
       final habits = await DBProvider.db.getAllHabits();
       emit(HabitsLoaded(habits));
     } catch (e) {

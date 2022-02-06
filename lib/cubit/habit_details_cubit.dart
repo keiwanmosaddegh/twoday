@@ -23,4 +23,21 @@ class HabitDetailsCubit extends Cubit<HabitDetailsState> {
       emit(HabitDetailsError(e.toString()));
     }
   }
+
+  Future<void> toggleHabitEntry(
+      {String habitId, bool value, DateTime dateTime}) async {
+    try {
+      await DBProvider.db.toggleHabitEntry(habitId, value, dateTime);
+      final habitDetailsResult = await DBProvider.db
+          .getHabitDetails(habitId: habitId, year: dateTime.year);
+      final habitDetails = HabitDetails(
+          habitId: habitId,
+          year: habitDetailsResult["year"],
+          quarterStatistics: habitDetailsResult["quarterStatistics"],
+          recordsForYear: habitDetailsResult["recordsForYear"]);
+      emit(HabitDetailsLoaded(habitDetails));
+    } catch (e) {
+      emit(HabitDetailsError(e.toString()));
+    }
+  }
 }

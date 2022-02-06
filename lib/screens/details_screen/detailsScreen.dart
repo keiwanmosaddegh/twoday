@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:twoday/common/constants.dart';
 import 'package:twoday/cubit/habit_cubit.dart';
 import 'package:twoday/cubit/habit_details_cubit.dart';
@@ -19,6 +20,19 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   String _currentTask;
+  CalendarController _calendarController;
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarController = CalendarController();
+  }
+
+  @override
+  void dispose() {
+    _calendarController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +70,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         return true;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: kBackground,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
@@ -84,7 +99,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     return buildHabitDetailsErrorMessage(state);
                   }
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -123,7 +138,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Widget buildStatisticsModule(HabitDetailsLoaded state) {
     final habitDetails = state.habitDetails;
-    CalendarController calendarController = CalendarController();
     return Column(
       children: [
         buildStatisticsLabel(state.habitDetails),
@@ -140,88 +154,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 quarter: 4, amount: habitDetails.quarterStatistics["q4Count"]),
           ],
         ),
-        Card(
-          child: TableCalendar(
-            onVisibleDaysChanged: (first, last, format) {
-              if (first.year < habitDetails.year) {
-                calendarController.nextPage();
-              } else if (first.year > habitDetails.year) {
-                calendarController.previousPage();
-              }
-            },
-            builders: CalendarBuilders(
-              dayBuilder: (context, date, events) {
-                if (events != null) {
-                  return Card(
-                    color: kGreen,
-                    child: Center(
-                      child: Text("${date.day}"),
-                    ),
-                  );
-                }
-                return Card(
-                  child: Center(
-                    child: Text("${date.day}"),
-                  ),
-                );
-              },
-              todayDayBuilder: (context, date, events) {
-                if (events != null) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                      side: BorderSide(
-                        color: Colors.green[300],
-                        width: 3,
-                      ),
-                    ),
-                    color: kGreen,
-                    child: Center(
-                      child: Text(
-                        "${date.day}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  );
-                }
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    side: BorderSide(
-                      color: Colors.grey[300],
-                      width: 3,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${date.day}",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                );
-              },
-              singleMarkerBuilder: (context, date, event) => SizedBox.shrink(),
-            ),
-            startDay: DateTime(habitDetails.year, 1, 1),
-            endDay: DateTime(habitDetails.year, 12, 31),
-            initialSelectedDay: habitDetails.year == DateTime.now().year
-                ? null
-                : DateTime(habitDetails.year, 1, 1),
-            daysOfWeekStyle: DaysOfWeekStyle(
-              weekdayStyle: TextStyle(color: kOnWhite),
-              weekendStyle: TextStyle(color: kOnWhite),
-            ),
-            calendarStyle: CalendarStyle(
-              outsideDaysVisible: false,
-            ),
-            calendarController: calendarController,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            headerStyle: HeaderStyle(
-                formatButtonVisible: false, centerHeaderTitle: true),
-            events: Map.fromIterable(habitDetails.recordsForYear,
-                key: (e) => e, value: (e) => [true]),
-          ),
-        )
+        buildTableCalendar(habitDetails),
       ],
     );
   }
@@ -259,6 +192,108 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
       style: TextStyle(
           fontSize: 30, fontWeight: FontWeight.w600, color: kOnBackground),
+    );
+  }
+
+  Widget buildTableCalendar(HabitDetails habitDetails) {
+    return Card(
+      child: TableCalendar(
+        onDayLongPressed: (day, events, holidays) async {
+          await BlocProvider.of<HabitDetailsCubit>(context).toggleHabitEntry(
+            habitId: habitDetails.habitId,
+            value: events?.isEmpty ?? true,
+            dateTime: day,
+          );
+        },
+        onVisibleDaysChanged: (first, last, format) {
+          if (first.year < habitDetails.year) {
+            _calendarController.nextPage();
+          } else if (first.year > habitDetails.year) {
+            _calendarController.previousPage();
+          }
+        },
+        builders: CalendarBuilders(
+          dayBuilder: (context, date, events) {
+            if (events?.isNotEmpty ?? false) {
+              var currentDateTime = DateTime.parse(
+                  DateFormat('yyyy-MM-dd').format(DateTime.now()));
+              if (date.difference(currentDateTime).inDays <= 0) {
+                return Card(
+                  color: kGreen,
+                  child: Center(
+                    child: Text("${date.day}"),
+                  ),
+                );
+              }
+              return Card(
+                color: Colors.green[50],
+                child: Center(
+                  child: Text("${date.day}"),
+                ),
+              );
+            }
+            return Card(
+              child: Center(
+                child: Text("${date.day}"),
+              ),
+            );
+          },
+          todayDayBuilder: (context, date, events) {
+            if (events?.isNotEmpty ?? false) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  side: BorderSide(
+                    color: Colors.green[300],
+                    width: 3,
+                  ),
+                ),
+                color: kGreen,
+                child: Center(
+                  child: Text(
+                    "${date.day}",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            }
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+                side: BorderSide(
+                  color: Colors.grey[300],
+                  width: 3,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "${date.day}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            );
+          },
+          singleMarkerBuilder: (context, date, event) => SizedBox.shrink(),
+        ),
+        startDay: DateTime(habitDetails.year, 1, 1),
+        endDay: DateTime(habitDetails.year, 12, 31),
+        initialSelectedDay: habitDetails.year == DateTime.now().year
+            ? DateTime.now()
+            : DateTime(habitDetails.year, 1, 1),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          weekdayStyle: TextStyle(color: kOnWhite),
+          weekendStyle: TextStyle(color: kOnWhite),
+        ),
+        calendarStyle: CalendarStyle(
+          outsideDaysVisible: false,
+        ),
+        calendarController: _calendarController,
+        startingDayOfWeek: StartingDayOfWeek.monday,
+        headerStyle:
+            HeaderStyle(formatButtonVisible: false, centerHeaderTitle: true),
+        events: Map.fromIterable(habitDetails.recordsForYear,
+            key: (e) => e, value: (e) => [true]),
+      ),
     );
   }
 }
