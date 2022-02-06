@@ -204,6 +204,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
             ),
             startDay: DateTime(habitDetails.year, 1, 1),
             endDay: DateTime(habitDetails.year, 12, 31),
+            initialSelectedDay: habitDetails.year == DateTime.now().year
+                ? null
+                : DateTime(habitDetails.year, 1, 1),
             daysOfWeekStyle: DaysOfWeekStyle(
               weekdayStyle: TextStyle(color: kOnWhite),
               weekendStyle: TextStyle(color: kOnWhite),
