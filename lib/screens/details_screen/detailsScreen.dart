@@ -6,6 +6,7 @@ import 'package:twoday/cubit/habit_cubit.dart';
 import 'package:twoday/cubit/habit_details_cubit.dart';
 import 'package:twoday/models/habit.dart';
 import 'package:twoday/models/habitDetails.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String id;
@@ -122,13 +123,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Widget buildStatisticsModule(HabitDetailsLoaded state) {
     final habitDetails = state.habitDetails;
+    CalendarController calendarController = CalendarController();
     return Column(
       children: [
         buildStatisticsLabel(state.habitDetails),
-        GridView.count(
-          childAspectRatio: 5.0,
-          shrinkWrap: true,
-          crossAxisCount: 2,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             buildQuarterStatistics(
                 quarter: 1, amount: habitDetails.quarterStatistics["q1Count"]),
@@ -140,31 +140,47 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 quarter: 4, amount: habitDetails.quarterStatistics["q4Count"]),
           ],
         ),
+        Card(
+          child: TableCalendar(
+            onVisibleDaysChanged: (first, last, format) {
+              if (first.year < habitDetails.year) {
+                calendarController.nextPage();
+              } else if (first.year > habitDetails.year) {
+                calendarController.previousPage();
+              }
+            },
+            startDay: DateTime(habitDetails.year, 1, 1),
+            endDay: DateTime(habitDetails.year, 12, 31),
+            calendarStyle: CalendarStyle(outsideDaysVisible: false),
+            calendarController: calendarController,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            headerStyle: HeaderStyle(
+                formatButtonVisible: false, centerHeaderTitle: true),
+          ),
+        )
       ],
     );
   }
 
   Widget buildQuarterStatistics({@required int quarter, @required int amount}) {
     return Card(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text(
-            "Q$quarter",
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w400, color: kOnWhite),
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-              child: Text(
-                "$amount",
-                style: TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w800, color: kOnWhite),
-              ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(30, 6, 30, 6),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Q$quarter",
+              style: TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w400, color: kOnWhite),
             ),
-          ),
-        ],
+            Text(
+              "$amount",
+              style: TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.w800, color: kOnWhite),
+            ),
+          ],
+        ),
       ),
     );
   }
