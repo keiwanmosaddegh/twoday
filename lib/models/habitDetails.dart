@@ -1,9 +1,7 @@
 class HabitDetails {
   final String habitId;
-  final int year;
-  final Map<String, int> quarterStatistics;
-  final List<DateTime> recordsForYear;
+  final Map<int, Map<String, int>> statistics;
+  final List<DateTime> entries;
 
-  HabitDetails(
-      {this.habitId, this.year, this.quarterStatistics, this.recordsForYear});
+  HabitDetails({this.habitId, this.statistics, this.entries});
 }

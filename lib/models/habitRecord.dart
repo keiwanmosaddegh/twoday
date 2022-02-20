@@ -3,15 +3,15 @@ import 'package:meta/meta.dart';
 
 import 'package:twoday/services/Database.dart';
 
-class HabitRecord {
+class HabitEntry {
   final String id;
   final String habitId;
   final DateTime date;
 
-  HabitRecord({@required this.habitId, @required this.date, String id})
+  HabitEntry({@required this.habitId, @required this.date, String id})
       : this.id = id ?? UniqueKey().toString();
 
-  factory HabitRecord.fromMap(Map<String, dynamic> map) => HabitRecord(
+  factory HabitEntry.fromMap(Map<String, dynamic> map) => HabitEntry(
         id: map[DBProvider.HABITRECORDS_COLUMN_ID],
         habitId: map[DBProvider.HABITRECORDS_COLUMN_HABIT_ID],
         date: DateTime.parse(map[DBProvider.HABITRECORDS_COLUMN_DATE]),

@@ -8,16 +8,15 @@ part 'habit_details_state.dart';
 class HabitDetailsCubit extends Cubit<HabitDetailsState> {
   HabitDetailsCubit() : super(HabitDetailsInitial());
 
-  Future<void> getHabitDetails({String habitId, int year}) async {
+  Future<void> getHabitDetails(String habitId) async {
     try {
       emit(HabitDetailsLoading());
       final habitDetailsResult =
-          await DBProvider.db.getHabitDetails(habitId: habitId, year: year);
+          await DBProvider.db.getHabitDetails(habitId: habitId);
       final habitDetails = HabitDetails(
           habitId: habitId,
-          year: habitDetailsResult["year"],
-          quarterStatistics: habitDetailsResult["quarterStatistics"],
-          recordsForYear: habitDetailsResult["recordsForYear"]);
+          statistics: habitDetailsResult["statistics"],
+          entries: habitDetailsResult["entries"]);
       emit(HabitDetailsLoaded(habitDetails));
     } catch (e) {
       emit(HabitDetailsError(e.toString()));
@@ -28,13 +27,12 @@ class HabitDetailsCubit extends Cubit<HabitDetailsState> {
       {String habitId, bool value, DateTime dateTime}) async {
     try {
       await DBProvider.db.toggleHabitEntry(habitId, value, dateTime);
-      final habitDetailsResult = await DBProvider.db
-          .getHabitDetails(habitId: habitId, year: dateTime.year);
+      final habitDetailsResult =
+          await DBProvider.db.getHabitDetails(habitId: habitId);
       final habitDetails = HabitDetails(
           habitId: habitId,
-          year: habitDetailsResult["year"],
-          quarterStatistics: habitDetailsResult["quarterStatistics"],
-          recordsForYear: habitDetailsResult["recordsForYear"]);
+          statistics: habitDetailsResult["statistics"],
+          entries: habitDetailsResult["entries"]);
       emit(HabitDetailsLoaded(habitDetails));
     } catch (e) {
       emit(HabitDetailsError(e.toString()));

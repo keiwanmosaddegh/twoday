@@ -104,7 +104,7 @@ class DBProvider {
         DateTime.parse(DateFormat('yyyy-MM-dd').format(dateTime));
     String dateTimeToString =
         "${dateTime.year.toString().padLeft(4, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
-    var habitRecordEntry = HabitRecord(habitId: habitId, date: actionDateTime);
+    var habitRecordEntry = HabitEntry(habitId: habitId, date: actionDateTime);
 
     if (value) {
       var res = await db.insert(TABLE_HABITRECORDS, habitRecordEntry.toMap());
@@ -118,18 +118,18 @@ class DBProvider {
     return res;
   }
 
-  Future<List<HabitRecord>> getHabitEntries(String id) async {
+  Future<List<HabitEntry>> getHabitEntries(String id) async {
     final db = await database;
     var res = await db.rawQuery('''SELECT * FROM $TABLE_HABITRECORDS
         WHERE $HABITRECORDS_COLUMN_HABIT_ID = ?
         ORDER BY $HABITRECORDS_COLUMN_DATE DESC''', [id]);
 
-    List<HabitRecord> habitRecords = <HabitRecord>[];
+    List<HabitEntry> habitEntries = <HabitEntry>[];
     for (final record in res) {
-      habitRecords.add(HabitRecord.fromMap(record));
+      habitEntries.add(HabitEntry.fromMap(record));
     }
 
-    return habitRecords;
+    return habitEntries;
   }
 
   Future<Map<String, dynamic>> getHabitMetrics(String habitId) async {
@@ -143,7 +143,7 @@ class DBProvider {
       var currentDateTime =
           DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
 
-      HabitRecord mostRecentHabitEntry;
+      HabitEntry mostRecentHabitEntry;
       for (var i = 0; i < habitRecords.length; i) {
         if (habitRecords[0].date.difference(currentDateTime).inDays <= 0) {
           mostRecentHabitEntry = habitRecords[0];
@@ -208,43 +208,41 @@ class DBProvider {
     };
   }
 
-  Future<Map<String, dynamic>> getHabitDetails(
-      {String habitId, int year}) async {
-    final habitRecords = await getHabitEntries(habitId);
-    var q1Count = 0;
-    var q2Count = 0;
-    var q3Count = 0;
-    var q4Count = 0;
-    List<DateTime> recordsForYear = [];
-    var currentDateTime =
+  Future<Map<String, dynamic>> getHabitDetails({String habitId}) async {
+    final habitEntries = await getHabitEntries(habitId);
+    List<DateTime> entries = habitEntries.map((entry) => entry.date).toList();
+    final dateTimeNow =
         DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
 
-    for (final record in habitRecords) {
-      if (record.date.year == year) {
-        recordsForYear.add(record.date);
-        if (record.date.difference(currentDateTime).inDays <= 0) {
-          if (record.date.month <= 3) {
-            q1Count++;
-          } else if (record.date.month >= 4 && record.date.month <= 6) {
-            q2Count++;
-          } else if (record.date.month >= 7 && record.date.month <= 9) {
-            q3Count++;
-          } else if (record.date.month >= 10 && record.date.month <= 12) {
-            q4Count++;
-          }
+    Map<int, Map<String, int>> statistics = {};
+
+    for (final entry in habitEntries) {
+      if (entry.date.difference(dateTimeNow).inDays <= 0) {
+        if (!statistics.containsKey(entry.date.year)) {
+          statistics[entry.date.year] = {
+            "q1": 0,
+            "q2": 0,
+            "q3": 0,
+            "q4": 0,
+          };
+        }
+
+        if (entry.date.month <= 3) {
+          statistics[entry.date.year]
+              .update("q1", (value) => value + 1, ifAbsent: () => 1);
+        } else if (entry.date.month >= 4 && entry.date.month <= 6) {
+          statistics[entry.date.year]
+              .update("q2", (value) => value + 1, ifAbsent: () => 1);
+        } else if (entry.date.month >= 7 && entry.date.month <= 9) {
+          statistics[entry.date.year]
+              .update("q3", (value) => value + 1, ifAbsent: () => 1);
+        } else if (entry.date.month >= 10 && entry.date.month <= 12) {
+          statistics[entry.date.year]
+              .update("q4", (value) => value + 1, ifAbsent: () => 1);
         }
       }
     }
 
-    return {
-      "year": year,
-      "quarterStatistics": {
-        "q1Count": q1Count,
-        "q2Count": q2Count,
-        "q3Count": q3Count,
-        "q4Count": q4Count
-      },
-      "recordsForYear": recordsForYear
-    };
+    return {"statistics": statistics, "entries": entries};
   }
 }

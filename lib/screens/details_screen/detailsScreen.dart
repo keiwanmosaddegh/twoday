@@ -140,18 +140,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final habitDetails = state.habitDetails;
     return Column(
       children: [
-        buildStatisticsLabel(state.habitDetails),
+        buildStatisticsLabel(habitDetails),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             buildQuarterStatistics(
-                quarter: 1, amount: habitDetails.quarterStatistics["q1Count"]),
+                quarter: 1,
+                amount: habitDetails.statistics[DateTime.now().year]["q1"]),
             buildQuarterStatistics(
-                quarter: 2, amount: habitDetails.quarterStatistics["q2Count"]),
+                quarter: 2,
+                amount: habitDetails.statistics[DateTime.now().year]["q2"]),
             buildQuarterStatistics(
-                quarter: 3, amount: habitDetails.quarterStatistics["q3Count"]),
+                quarter: 3,
+                amount: habitDetails.statistics[DateTime.now().year]["q3"]),
             buildQuarterStatistics(
-                quarter: 4, amount: habitDetails.quarterStatistics["q4Count"]),
+                quarter: 4,
+                amount: habitDetails.statistics[DateTime.now().year]["q4"]),
           ],
         ),
         buildTableCalendar(habitDetails),
@@ -275,11 +279,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
           },
           singleMarkerBuilder: (context, date, event) => SizedBox.shrink(),
         ),
-        startDay: DateTime(habitDetails.year, 1, 1),
-        endDay: DateTime(habitDetails.year, 12, 31),
-        initialSelectedDay: habitDetails.year == DateTime.now().year
-            ? DateTime.now()
-            : DateTime(habitDetails.year, 1, 1),
         daysOfWeekStyle: DaysOfWeekStyle(
           weekdayStyle: TextStyle(color: kOnWhite),
           weekendStyle: TextStyle(color: kOnWhite),
@@ -291,7 +290,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         startingDayOfWeek: StartingDayOfWeek.monday,
         headerStyle:
             HeaderStyle(formatButtonVisible: false, centerHeaderTitle: true),
-        events: Map.fromIterable(habitDetails.recordsForYear,
+        events: Map.fromIterable(habitDetails.entries,
             key: (e) => e, value: (e) => [true]),
       ),
     );
