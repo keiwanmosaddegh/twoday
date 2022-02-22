@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,82 +108,85 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  Card buildStatisticsLabel(HabitDetails habitDetails) {
+  Widget buildStatisticsModule(HabitDetailsLoaded state) {
+    final habitDetails = state.habitDetails;
+
+    final items = habitDetails.statistics.entries
+        .map((e) => buildQuarterStatisticsForYear(e.value, year: e.key))
+        .toList();
+
+    // final items = habitDetails.statistics.values
+    //     .map((quarterStatisticsForYear) =>
+    //         buildQuarterStatisticsForYear(quarterStatisticsForYear))
+    //     .toList();
+
+    return Column(
+      children: [
+        buildCarouselSlider(items),
+        buildTableCalendar(habitDetails),
+      ],
+    );
+  }
+
+  CarouselSlider buildCarouselSlider(List<Widget> items) {
+    return CarouselSlider(
+      items: items,
+      options: CarouselOptions(
+        enableInfiniteScroll: false,
+        initialPage: 0,
+        aspectRatio: 3 / 1,
+        viewportFraction: 1,
+        reverse: true,
+      ),
+    );
+  }
+
+  Widget buildQuarterStatisticsForYear(
+      Map<String, int> quarterStatisticsForYear,
+      {@required int year}) {
     return Card(
-      color: kWhite,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          IconButton(
-            icon: Icon(Icons.chevron_left),
-            onPressed: () async {
-              await BlocProvider.of<HabitDetailsCubit>(context).getHabitDetails(
-                  habitId: habitDetails.habitId, year: habitDetails.year - 1);
-            },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 16, 0, 22),
+            child: Text(
+              "Statistics of $year",
+              style: TextStyle(fontSize: 16, color: kOnWhite),
+            ),
           ),
-          Text(
-            "Statistics of ${habitDetails.year}",
-            style: TextStyle(fontSize: 16, color: kOnWhite),
-          ),
-          IconButton(
-            icon: Icon(Icons.chevron_right),
-            onPressed: () async {
-              await BlocProvider.of<HabitDetailsCubit>(context).getHabitDetails(
-                  habitId: habitDetails.habitId, year: habitDetails.year + 1);
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              buildQuarterStatistics(
+                  quarter: 1, amount: quarterStatisticsForYear["q1"]),
+              buildQuarterStatistics(
+                  quarter: 2, amount: quarterStatisticsForYear["q2"]),
+              buildQuarterStatistics(
+                  quarter: 3, amount: quarterStatisticsForYear["q3"]),
+              buildQuarterStatistics(
+                  quarter: 4, amount: quarterStatisticsForYear["q4"]),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget buildStatisticsModule(HabitDetailsLoaded state) {
-    final habitDetails = state.habitDetails;
-    return Column(
-      children: [
-        buildStatisticsLabel(habitDetails),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            buildQuarterStatistics(
-                quarter: 1,
-                amount: habitDetails.statistics[DateTime.now().year]["q1"]),
-            buildQuarterStatistics(
-                quarter: 2,
-                amount: habitDetails.statistics[DateTime.now().year]["q2"]),
-            buildQuarterStatistics(
-                quarter: 3,
-                amount: habitDetails.statistics[DateTime.now().year]["q3"]),
-            buildQuarterStatistics(
-                quarter: 4,
-                amount: habitDetails.statistics[DateTime.now().year]["q4"]),
-          ],
-        ),
-        buildTableCalendar(habitDetails),
-      ],
-    );
-  }
-
   Widget buildQuarterStatistics({@required int quarter, @required int amount}) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(30, 6, 30, 6),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Q$quarter",
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w400, color: kOnWhite),
-            ),
-            Text(
-              "$amount",
-              style: TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.w800, color: kOnWhite),
-            ),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Q$quarter",
+          style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w400, color: kOnWhite),
         ),
-      ),
+        Text(
+          "$amount",
+          style: TextStyle(
+              fontSize: 24, fontWeight: FontWeight.w800, color: kOnWhite),
+        ),
+      ],
     );
   }
 
@@ -203,18 +207,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return Card(
       child: TableCalendar(
         onDayLongPressed: (day, events, holidays) async {
-          await BlocProvider.of<HabitDetailsCubit>(context).toggleHabitEntry(
+          await BlocProvider.of<HabitDetailsCubit>(context).toggleHabitEntry( 
             habitId: habitDetails.habitId,
             value: events?.isEmpty ?? true,
             dateTime: day,
           );
-        },
-        onVisibleDaysChanged: (first, last, format) {
-          if (first.year < habitDetails.year) {
-            _calendarController.nextPage();
-          } else if (first.year > habitDetails.year) {
-            _calendarController.previousPage();
-          }
         },
         builders: CalendarBuilders(
           dayBuilder: (context, date, events) {
