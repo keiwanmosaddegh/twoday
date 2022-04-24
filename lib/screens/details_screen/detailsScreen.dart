@@ -132,9 +132,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return CarouselSlider(
       items: items,
       options: CarouselOptions(
+        height: 120,
         enableInfiniteScroll: false,
         initialPage: 0,
-        aspectRatio: 3 / 1,
         viewportFraction: 1,
         reverse: true,
       ),
@@ -207,7 +207,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return Card(
       child: TableCalendar(
         onDayLongPressed: (day, events, holidays) async {
-          await BlocProvider.of<HabitDetailsCubit>(context).toggleHabitEntry( 
+          await BlocProvider.of<HabitDetailsCubit>(context).toggleHabitEntry(
             habitId: habitDetails.habitId,
             value: events?.isEmpty ?? true,
             dateTime: day,
