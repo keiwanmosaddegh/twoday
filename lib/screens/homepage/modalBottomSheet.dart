@@ -23,6 +23,8 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.fromLTRB(26, 16, 12, 8),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
