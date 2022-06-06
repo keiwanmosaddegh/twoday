@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:twoday/services/Database.dart';
+import 'package:twoday/services/db_constants.dart';
 
 class Habit extends Equatable {
   final String id;
@@ -37,16 +37,16 @@ class Habit extends Equatable {
   }
 
   factory Habit.fromMap(Map<String, dynamic> map) =>
-      new Habit(map[DBProvider.HABIT_COLUMN_TASK],
-          id: map[DBProvider.HABIT_COLUMN_ID],
-          done: map[DBProvider.HABIT_COLUMN_DONE] == 1,
-          currentStreak: map[DBProvider.HABIT_COLUMN_CURRENT_STREAK],
-          longestStreak: map[DBProvider.HABIT_COLUMN_LONGEST_STREAK],
-          daysSinceLastDone: map[DBProvider.HABIT_COLUMN_DAYS_SINCE_LAST_DONE]);
+      new Habit(map[HABIT_COLUMN_TASK],
+          id: map[HABIT_COLUMN_ID],
+          done: map[HABIT_COLUMN_DONE] == 1,
+          currentStreak: map[HABIT_COLUMN_CURRENT_STREAK],
+          longestStreak: map[HABIT_COLUMN_LONGEST_STREAK],
+          daysSinceLastDone: map[HABIT_COLUMN_DAYS_SINCE_LAST_DONE]);
 
   Map<String, dynamic> toMap() => {
-        DBProvider.HABIT_COLUMN_ID: id,
-        DBProvider.HABIT_COLUMN_TASK: task,
+        HABIT_COLUMN_ID: id,
+        HABIT_COLUMN_TASK: task,
       };
 
   @override

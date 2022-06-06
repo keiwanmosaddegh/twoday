@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
-
-import 'package:twoday/services/Database.dart';
+import 'package:twoday/services/db_constants.dart';
 
 class HabitEntry {
   final String id;
@@ -12,15 +10,15 @@ class HabitEntry {
       : this.id = id ?? UniqueKey().toString();
 
   factory HabitEntry.fromMap(Map<String, dynamic> map) => HabitEntry(
-        id: map[DBProvider.HABITRECORDS_COLUMN_ID],
-        habitId: map[DBProvider.HABITRECORDS_COLUMN_HABIT_ID],
-        date: DateTime.parse(map[DBProvider.HABITRECORDS_COLUMN_DATE]),
+        id: map[HABITRECORDS_COLUMN_ID],
+        habitId: map[HABITRECORDS_COLUMN_HABIT_ID],
+        date: DateTime.parse(map[HABITRECORDS_COLUMN_DATE]),
       );
 
   Map<String, dynamic> toMap() => {
-        DBProvider.HABITRECORDS_COLUMN_ID: id,
-        DBProvider.HABITRECORDS_COLUMN_HABIT_ID: habitId,
-        DBProvider.HABITRECORDS_COLUMN_DATE:
+        HABITRECORDS_COLUMN_ID: id,
+        HABITRECORDS_COLUMN_HABIT_ID: habitId,
+        HABITRECORDS_COLUMN_DATE:
             "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
       };
 
